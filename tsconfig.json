@@ -14,6 +14,6 @@
     "resolveJsonModule": true,
     "baseUrl": "src"
   },
-  "include": ["src", "stories/DndXYHtmlEditor.stories.ts"],
+  "include": ["src", "stories/DndXYHtmlEditor.stories.tsx"],
   "exclude": ["node_modules", "build"]
 }
