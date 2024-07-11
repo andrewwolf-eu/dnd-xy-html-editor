@@ -41,10 +41,10 @@
     "@storybook/react-webpack5": "^8.2.1",
     "@storybook/test": "^8.2.1",
     "prop-types": "^15.8.1",
-    "storybook": "^8.2.1",
     "rollup": "^4.18.0",
     "rollup-plugin-includepaths": "^0.2.4",
     "rollup-plugin-postcss": "^4.0.2",
-    "rollup-plugin-typescript2": "^0.34.1"
+    "rollup-plugin-typescript2": "^0.34.1",
+    "storybook": "^8.2.1"
   }
 }
