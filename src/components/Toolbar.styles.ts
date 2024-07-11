@@ -2,8 +2,8 @@ import { CSSProperties } from 'react';
 
 export const styles: { [key: string]: CSSProperties } = {
   toolbar: {
-    padding: '10px',
-    borderRight: '1px solid #ddd',
+    // padding: '10px',
+    // borderRight: '1px solid #ddd',
     backgroundColor: '#f9f9f9',
     width: '100%',
   },

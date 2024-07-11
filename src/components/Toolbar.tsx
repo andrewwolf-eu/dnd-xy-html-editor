@@ -1,8 +1,9 @@
 import React from "react";
 import { useDraggable } from "@dnd-kit/core";
+import { ToolbarProps } from "DndXYHtmlEditor.types";
 import { styles } from "./Toolbar.styles";
 
-const draggableItems = [
+const demoHtmlElements = [
   <div key="div-element" style={styles.draggableItem}>
     Div Element
   </div>,
@@ -17,10 +18,11 @@ const draggableItems = [
   </p>,
 ];
 
-const Toolbar: React.FC = () => {
+const Toolbar = ({ htmlElements }: ToolbarProps) => {
+  const toolbarhtmlElements = htmlElements ? htmlElements : demoHtmlElements
   return (
     <div style={styles.toolbar}>
-      {draggableItems.map((item, index) => (
+      {toolbarhtmlElements.map((item, index) => (
         <DraggableItem
           key={item.key}
           id={`draggable-${index}`}

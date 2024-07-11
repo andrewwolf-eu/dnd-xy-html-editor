@@ -8,19 +8,19 @@ export const styles: { [key: string]: CSSProperties } = {
   },
   editorAreaContainer: {
     flexGrow: 1,
-    padding: '20px',
+    // padding: '20px',
     overflowY: 'auto',
   },
   toolbarContainer: {
     width: '300px',
-    padding: '20px',
+    // padding: '20px',
     borderLeft: '1px solid #ddd',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
   },
   controls: {
-    marginTop: '20px',
+    // marginTop: '20px',
   },
   dragOverlay: {
     position: 'absolute',

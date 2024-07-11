@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   DndContext,
   DragOverlay,
@@ -20,16 +20,24 @@ import {
   handleOutput,
 } from "./utils/editorHandlers";
 import { EditorProvider, useEditor } from "./context/EditorContext";
+import { DndXYHtmlEditorProps } from "DndXYHtmlEditor.types";
 import { styles } from "./DndXYHtmlEditor.styles";
 
-const AppContent: React.FC = () => {
+const AppContent = ({ htmlElements }: DndXYHtmlEditorProps) => {
   const { verticalElements, addVerticalElement, setVerticalElements } = useEditor();
   const [activeId, setActiveId] = useState<number | null>(null);
   const [activeElement, setActiveElement] = useState<JSX.Element | null>(null);
   const [selectedVerticalElement, setSelectedVerticalElement] = useState<number | null>(null);
   const [selectedHorizontalElement, setSelectedHorizontalElement] = useState<string | null>(null);
+  const [containerHeight, setContainerHeight] = useState<number>(window.innerHeight);
 
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
+
+  useEffect(() => {
+    const updateHeight = () => setContainerHeight(window.innerHeight);
+    window.addEventListener('resize', updateHeight);
+    return () => window.removeEventListener('resize', updateHeight);
+  }, []);
 
   const onVerticalElementClick = (verticalElementId: number) => {
     setSelectedVerticalElement(verticalElementId);
@@ -58,7 +66,7 @@ const AppContent: React.FC = () => {
       }
     >
       <div style={styles.app}>
-        <div style={styles.editorAreaContainer}>
+        <div style={{ ...styles.editorAreaContainer, height: containerHeight }}>
           <SortableContext
             items={verticalElements.map((verticalElement) => `editor-${verticalElement.id}`)}
           >
@@ -75,13 +83,13 @@ const AppContent: React.FC = () => {
           </SortableContext>
         </div>
         <div style={styles.toolbarContainer}>
-          <Toolbar />
           <div style={styles.controls}>
             <button onClick={addVerticalElement}>Add Vertical Element</button>
             <button onClick={() => handleSave(verticalElements)}>Save</button>
             <button onClick={() => handleLoad(setVerticalElements)}>Load</button>
             <button onClick={() => handleOutput(verticalElements)}>HTML Output</button>
           </div>
+          <Toolbar htmlElements={htmlElements}/>
         </div>
         <DragOverlay>
           {activeId && activeElement ? (
@@ -95,10 +103,10 @@ const AppContent: React.FC = () => {
   );
 };
 
-export const DndXYHtmlEditor = () => {
+export const DndXYHtmlEditor = (props: DndXYHtmlEditorProps) => {
   return (
     <EditorProvider>
-      <AppContent />
+      <AppContent {...props} />
     </EditorProvider>
   );
 };

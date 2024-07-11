@@ -3,7 +3,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import EditorArea from "./EditorArea";
 import { CSS } from "@dnd-kit/utilities";
 import { useEditor } from "../context/EditorContext";
-import { VerticalElement } from "../utils/interfaces";
+import { VerticalElement } from "../DndXYHtmlEditor.types";
 
 interface SortableEditorAreaProps {
   verticalElement: VerticalElement;

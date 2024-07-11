@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOMServer from "react-dom/server";
 import { arrayMove } from "@dnd-kit/sortable";
-import { VerticalElement } from "./interfaces";
+import { VerticalElement } from "../DndXYHtmlEditor.types";
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 
 // Utility to serialize elements

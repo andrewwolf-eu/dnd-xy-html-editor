@@ -1,7 +1,7 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { fn } from "@storybook/test";
 import { DndXYHtmlEditor } from "../src/DndXYHtmlEditor";
+import { DndXYHtmlEditorProps } from "DndXYHtmlEditor.types";
 
 const meta = {
   title: "Demo/DndXYHtmlEditor",
@@ -10,20 +10,30 @@ const meta = {
     layout: "fullscreen",
   },
   tags: ["autodocs"],
-  argTypes: {
-    backgroundColor: { control: "color" },
-  },
-  args: { onClick: fn() },
 } satisfies Meta<typeof DndXYHtmlEditor>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+const htmlElements = [
+  <div key="div-element">
+    Div Element
+  </div>,
+  <img
+    key="image-element"
+    src="https://via.placeholder.com/50"
+    alt="Image Element"
+  />,
+  <p key="text-element">
+    Text Element
+  </p>,
+];
+
 export const Demo: Story = {
-  render: (args) => (
-    <div style={{ width: '100%', height: '100%' }}>
-      <DndXYHtmlEditor />
-    </div>
-  ),
-  args: {},
+  render: (args: DndXYHtmlEditorProps) => {
+    return (<DndXYHtmlEditor htmlElements={args.htmlElements}/>)
+  },
+  args: {
+    htmlElements
+  },
 };

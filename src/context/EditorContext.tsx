@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
-import { VerticalElement } from "../utils/interfaces";
+import { VerticalElement } from "../DndXYHtmlEditor.types";
 
 interface EditorContextType {
   verticalElements: VerticalElement[];

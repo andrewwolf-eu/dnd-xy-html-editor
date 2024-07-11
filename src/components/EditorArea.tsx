@@ -5,7 +5,6 @@ import { IconButton } from '@mui/material';
 import { Delete } from '@mui/icons-material';
 import SortableItem from "./SortableItem";
 import DimensionSelector from "./DimensionSelector";
-import { useEditor } from "../context/EditorContext";
 import { styles } from "./EditorArea.styles";
 
 interface EditorAreaProps {
