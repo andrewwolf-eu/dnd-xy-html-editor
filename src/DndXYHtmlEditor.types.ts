@@ -1,15 +1,15 @@
 export interface DndXYHtmlEditorProps
   extends VerticalElementConfigurationProps {
-    htmlElements: htmlElement[],
-  }
+  htmlElements: htmlElement[];
+}
 
 export interface EditorAreaProps
   extends VerticalElementConfigurationProps,
     SelectionProps {}
 
 export interface EditorContextType {
-  htmlElements: htmlElement[],
-  setHtmlElements: React.Dispatch<React.SetStateAction<htmlElement[]>>,
+  htmlElements: htmlElement[];
+  setHtmlElements: React.Dispatch<React.SetStateAction<htmlElement[]>>;
   verticalElements: VerticalElement[];
   setVerticalElements: React.Dispatch<React.SetStateAction<VerticalElement[]>>;
   selectedVerticalElement: string;
@@ -36,11 +36,15 @@ export interface htmlElementConfiguration {
 
 export interface htmlElement {
   element: htmlElementFunction;
-  configuration:  htmlElementConfiguration;
+  configuration: htmlElementConfiguration;
 }
 
 export interface DynamicHTMLContentProps {
   htmlElement: htmlElement;
+}
+
+export interface ConfigurationComponentProps {
+  configuration: htmlElementConfiguration;
 }
 
 export interface VerticalElement {
@@ -51,8 +55,10 @@ export interface VerticalElement {
 
 export interface DraggableItemProps {
   id: string;
-  element: JSX.Element
-};
+  element: JSX.Element;
+  onMouseDown: (e: any) => void;
+  selectedElementId: string;
+}
 
 interface VerticalElementConfigurationProps {
   verticalElementConfiguration?: {

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDraggable } from "@dnd-kit/core";
-import { DraggableItemProps, DynamicHTMLContentProps, htmlElement } from "DndXYHtmlEditor.types";
+import { ConfigurationComponentProps, DraggableItemProps, DynamicHTMLContentProps, htmlElement } from "DndXYHtmlEditor.types";
 import { styles } from "./Toolbar.styles";
 import { demoHtmlElements } from "./DemoHtmlElements";
 import { useEditor } from "../context/EditorContext";
@@ -11,11 +11,103 @@ const DynamicHTMLContent: React.FC<DynamicHTMLContentProps> = ({ htmlElement }) 
   return (<Element {...htmlElement.configuration} />);
 };
 
-const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ element }) => {
+const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ configuration }) => {
+  const { setHtmlElements } = useEditor();
+  const [formState, setFormState] = useState(() => {
+    // Initialize the form state based on the configuration object
+    const initialState: { [key: string]: any } = {};
+    for (const key in configuration) {
+      if (typeof configuration[key] !== 'object') {
+        initialState[key] = configuration[key];
+      }
+    }
+    return initialState;
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormState((prevState) => ({
+      ...prevState,
+      [name]: value
+    }));
+    setHtmlElements((prevElements: htmlElement[]) => {
+      return [
+        ...prevElements.map(((prevElement: htmlElement) => {
+          if (prevElement.configuration.key !== configuration.key) {
+            return prevElement
+          } else {
+            const updatedElement = {
+              ...prevElement,
+              configuration: {
+                ...prevElement.configuration,
+                [name]: value
+              }
+            }
+            return updatedElement
+          }
+        }))
+      ]
+    });
+  };
+
+  const renderInput = (key: string, value: any) => {
+    if (typeof value === 'string') {
+      return (
+        <div key={key}>
+          <label>{key}:</label>
+          <input
+            type="text"
+            name={key}
+            value={formState[key]}
+            onChange={handleChange}
+          />
+        </div>
+      );
+    } else if (typeof value === 'number') {
+      return (
+        <div key={key}>
+          <label>{key}:</label>
+          <input
+            type="number"
+            name={key}
+            value={formState[key]}
+            onChange={handleChange}
+          />
+        </div>
+      );
+    } else if (typeof value === 'boolean') {
+      return (
+        <div key={key}>
+          <label>{key}:</label>
+          <input
+            type="checkbox"
+            name={key}
+            checked={formState[key]}
+            onChange={(e) => setFormState((prevState) => ({
+              ...prevState,
+              [key]: e.target.checked
+            }))}
+          />
+        </div>
+      );
+    } else if (typeof value === 'object' && !Array.isArray(value)) {
+      return (
+        <div key={key} style={value}>
+          {/* Assume it's a style object */}
+          <p style={value}>{key} (styled):</p>
+        </div>
+      );
+    } else {
+      return null;
+    }
+  };
+
   return (
     <div>
-      {/* Render configuration options based on the selected element */}
-      <p>Configuration for: {element.name}</p>
+      <p>Configuration for: {configuration.key || 'unknown'}</p>
+      {Object.entries(configuration).map(([key, value]) =>
+        renderInput(key, value)
+      )}
     </div>
   );
 };
@@ -25,15 +117,15 @@ const Toolbar = () => {
   const toolbarhtmlElements = htmlElements ? htmlElements : demoHtmlElements
   // State to manage active tab and selected element
   const [activeTab, setActiveTab] = useState<string>('elements');
-  const [selectedElement, setSelectedElement] = useState<HTMLElement | null>(null);
+  const [selectedElement, setSelectedElement] = useState<{ id: string, HtmlElement: htmlElement }>({ id: '', HtmlElement: null });
 
   // Function to handle tab switch
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
   };
 
-  const handleElementSelect = (element: HTMLElement) => {
-    setSelectedElement(element);
+  const handleElementSelect = (id: string, HtmlElement: htmlElement) => {
+    setSelectedElement({ id, HtmlElement });
   };
 
   return (
@@ -52,12 +144,17 @@ const Toolbar = () => {
       {activeTab === 'elements' && (
         <div style={styles.tabContent}>
           {toolbarhtmlElements.map((item: htmlElement, index) => {
+            const id = `draggable-${index}`
             return (
               <DraggableItem
                 key={index}
-                id={`draggable-${index}`}
+                id={id}
                 element={<DynamicHTMLContent htmlElement={item} />}
-                onClick={() => handleElementSelect(item)}
+                selectedElementId={selectedElement.id}
+                onMouseDown={(e) => {
+                  e.stopPropagation();
+                  handleElementSelect(id, item);
+                }}
               />
             );
           })}
@@ -65,8 +162,8 @@ const Toolbar = () => {
       )}
       {activeTab === 'configuration' && (
         <div style={styles.tabContent}>
-          {selectedElement ? (
-            <ConfigurationComponent element={selectedElement} />
+          {selectedElement.HtmlElement ? (
+            <ConfigurationComponent configuration={selectedElement.HtmlElement.configuration} />
           ) : (
             <div>Please select an element to configure</div>
           )}
@@ -76,7 +173,7 @@ const Toolbar = () => {
   );
 };
 
-const DraggableItem: React.FC<DraggableItemProps> = ({ id, element }) => {
+const DraggableItem: React.FC<DraggableItemProps> = ({ id, element, onMouseDown, selectedElementId }) => {
   const { attributes, listeners, setNodeRef } = useDraggable({
     id,
     data: {
@@ -84,12 +181,25 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ id, element }) => {
     },
   });
 
+  const handleMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (onMouseDown) {
+      onMouseDown(event);
+    }
+    listeners.onMouseDown(event);
+  };
+
+  const isSelectedItem = selectedElementId === id;
+
   return (
     <div
       ref={setNodeRef}
       {...attributes}
       {...listeners}
-      style={styles.draggableItemContainer}
+      onMouseDown={handleMouseDown}
+      style={{
+        ...styles.draggableItemContainer,
+        ...(isSelectedItem ? styles.draggableItemContainerSelected : {}),
+      }}
     >
       {element}
     </div>

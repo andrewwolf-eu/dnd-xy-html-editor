@@ -43,6 +43,9 @@ export const styles: { [key: string]: CSSProperties } = {
     // transform: `scale(0.7)`,
     height: '100px'
   },
+  draggableItemContainerSelected: {
+    border: "2px solid blue",
+  },
   grabIcon: {
     marginLeft: 'auto',
     cursor: 'grab',

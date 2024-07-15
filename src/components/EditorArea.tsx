@@ -70,8 +70,8 @@ const EditorArea = ({
                   <div
                     key={itemId}
                     style={{
-                      ...styles.flexColumnContainer,
-                      ...(isSelectedItem ? styles.flexColumnContainerSelected : {}),
+                      ...styles.flexVerticalContainer,
+                      ...(isSelectedItem ? styles.flexVerticalContainerSelected : {}),
                     }}
                     onMouseDown={(e) => {
                       e.stopPropagation();
@@ -81,7 +81,7 @@ const EditorArea = ({
                     <SortableItem id={itemId}>
                       <div
                         style={{
-                          ...styles.flexColumn,
+                          ...styles.flexVertical,
                           flexBasis: dimensions[index % dimensions.length],
                         }}
                       >

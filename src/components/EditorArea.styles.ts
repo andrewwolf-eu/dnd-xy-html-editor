@@ -35,14 +35,14 @@ export const styles: { [key: string]: CSSProperties } = {
     width: "100%",
     gap: "10px",
   },
-  flexColumnContainer: {
+  flexVerticalContainer: {
     position: "relative",
     flexGrow: 1,
   },
-  flexColumnContainerSelected: {
+  flexVerticalContainerSelected: {
     border: "2px solid blue",
   },
-  flexColumn: {
+  flexVertical: {
     border: "1px solid #ddd",
     backgroundColor: "#fff",
     minHeight: "100px",
