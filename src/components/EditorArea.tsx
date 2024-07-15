@@ -12,13 +12,16 @@ import { styles } from "./EditorArea.styles";
 const EditorArea = ({
   verticalElementConfiguration,
   verticalElement,
-  selectedVerticalElement,
-  selectedHorizontalElement,
   onVerticalElementClick,
   onHorizontalElementClick,
 }: EditorAreaProps) => {
   const { id: verticalElementId, horizontalElements, dimensions } = verticalElement
-  const { updateVerticalElementHorizontalElements, removeVerticalElement } = useEditor();
+  const {
+    selectedVerticalElement,
+    selectedHorizontalElement,
+    updateVerticalElementHorizontalElements,
+    removeVerticalElement
+  } = useEditor();
   const { setNodeRef } = useDroppable({
     id: `editor-area-${verticalElementId}`,
   });

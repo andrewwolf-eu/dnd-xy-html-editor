@@ -24,22 +24,28 @@ import { DndXYHtmlEditorProps } from "DndXYHtmlEditor.types";
 import { styles } from "./DndXYHtmlEditor.styles";
 
 const AppContent = ({ verticalElementConfiguration = { enableDelete: true, enableDimensionSelector: true }, htmlElements }: DndXYHtmlEditorProps) => {
-  const { verticalElements, addVerticalElement, setVerticalElements } = useEditor();
-  const [activeId, setActiveId] = useState<number | null>(null);
+  const {
+    setHtmlElements,
+    verticalElements, setVerticalElements,
+    setSelectedVerticalElement,
+    setSelectedHorizontalElement,
+    addVerticalElement
+  } = useEditor();
+  const [activeId, setActiveId] = useState<string | null>(null);
   const [activeElement, setActiveElement] = useState<JSX.Element | null>(null);
-  const [selectedVerticalElement, setSelectedVerticalElement] = useState<number | null>(null);
-  const [selectedHorizontalElement, setSelectedHorizontalElement] = useState<string | null>(null);
   const [containerHeight, setContainerHeight] = useState<number>(window.innerHeight);
 
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
   useEffect(() => {
+    setHtmlElements(htmlElements)
+
     const updateHeight = () => setContainerHeight(window.innerHeight);
     window.addEventListener('resize', updateHeight);
     return () => window.removeEventListener('resize', updateHeight);
   }, []);
 
-  const onVerticalElementClick = (verticalElementId: number) => {
+  const onVerticalElementClick = (verticalElementId: string) => {
     setSelectedVerticalElement(verticalElementId);
     setSelectedHorizontalElement(null);
   };
@@ -75,8 +81,6 @@ const AppContent = ({ verticalElementConfiguration = { enableDelete: true, enabl
                 verticalElementConfiguration={verticalElementConfiguration}
                 key={verticalElement.id}
                 verticalElement={verticalElement}
-                selectedVerticalElement={selectedVerticalElement}
-                selectedHorizontalElement={selectedHorizontalElement}
                 onVerticalElementClick={onVerticalElementClick}
                 onHorizontalElementClick={onHorizontalElementClick}
               />
@@ -90,7 +94,7 @@ const AppContent = ({ verticalElementConfiguration = { enableDelete: true, enabl
             <button onClick={() => handleLoad(setVerticalElements)}>Load</button>
             <button onClick={() => handleOutput(verticalElements)}>HTML Output</button>
           </div>
-          <Toolbar htmlElements={htmlElements} />
+          <Toolbar />
         </div>
         <DragOverlay>
           {activeId && activeElement ? (

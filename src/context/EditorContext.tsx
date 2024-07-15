@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
-import { EditorContextType, VerticalElement } from "../DndXYHtmlEditor.types";
+import { EditorContextType, htmlElement, VerticalElement } from "../DndXYHtmlEditor.types";
 
 const EditorContext = createContext<EditorContextType | undefined>(undefined);
 
@@ -14,24 +14,27 @@ export const useEditor = () => {
 export const EditorProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
+  const [htmlElements, setHtmlElements] = useState<htmlElement[]>([])
   const [verticalElements, setVerticalElements] = useState<VerticalElement[]>([
-    { id: 0, dimensions: ["100%"], horizontalElements: [] },
+    { id: '0', dimensions: ["100%"], horizontalElements: [] },
   ]);
+  const [selectedVerticalElement, setSelectedVerticalElement] = useState<string | null>(null);
+  const [selectedHorizontalElement, setSelectedHorizontalElement] = useState<string | null>(null);
 
   const addVerticalElement = () => {
     setVerticalElements((prevVerticalElements) => [
       ...prevVerticalElements,
-      { id: prevVerticalElements.length, dimensions: ["100%"], horizontalElements: [] },
+      { id: prevVerticalElements.length.toString(), dimensions: ["100%"], horizontalElements: [] },
     ]);
   };
 
-  const removeVerticalElement = (verticalElementId: number) => {
+  const removeVerticalElement = (verticalElementId: string) => {
     setVerticalElements((prevVerticalElements) =>
       prevVerticalElements.filter((verticalElement) => verticalElement.id !== verticalElementId)
     );
   };
 
-  const updateVerticalElementHorizontalElements = (verticalElementId: number, horizontalElements: JSX.Element[]) => {
+  const updateVerticalElementHorizontalElements = (verticalElementId: string, horizontalElements: JSX.Element[]) => {
     setVerticalElements((prevVerticalElements) =>
       prevVerticalElements.map((verticalElement) =>
         verticalElement.id === verticalElementId ? { ...verticalElement, horizontalElements } : verticalElement
@@ -39,7 +42,7 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({
     );
   };
 
-  const updateVerticalElementDimension = (verticalElementId: number, dimensions: string[]) => {
+  const updateVerticalElementDimension = (verticalElementId: string, dimensions: string[]) => {
     setVerticalElements((prevVerticalElements) =>
       prevVerticalElements.map((verticalElement) =>
         verticalElement.id === verticalElementId ? { ...verticalElement, dimensions } : verticalElement
@@ -50,8 +53,14 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({
   return (
     <EditorContext.Provider
       value={{
+        htmlElements,
+        setHtmlElements,
         verticalElements,
         setVerticalElements,
+        selectedVerticalElement,
+        setSelectedVerticalElement,
+        selectedHorizontalElement,
+        setSelectedHorizontalElement,
         addVerticalElement,
         removeVerticalElement,
         updateVerticalElementHorizontalElements,

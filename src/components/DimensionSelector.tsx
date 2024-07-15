@@ -4,18 +4,17 @@ import { useEditor } from "../context/EditorContext";
 
 export const handleDimensionChange = (
   event: React.ChangeEvent<HTMLSelectElement>,
-  verticalElementId: number,
-  updateVerticalElementDimension: (verticalElementId: number, dimensions: string[]) => void
+  verticalElementId: string,
+  updateVerticalElementDimension: (verticalElementId: string, dimensions: string[]) => void
 ) => {
   const layout = event.target.value;
-  console.log({ layout })
   const dimensions = getDimensionValue(layout);
   updateVerticalElementDimension(verticalElementId, dimensions);
 };
 
 const DimensionSelector = ({
   verticalElementId
-}: { verticalElementId: number }) => {
+}: { verticalElementId: string }) => {
   const { verticalElements, updateVerticalElementDimension } = useEditor();
 
   return (

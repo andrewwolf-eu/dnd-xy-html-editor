@@ -24,10 +24,10 @@ const deserializeElement = (serializedElement: any) => {
 
 export const handleDragStart = (
   event: DragStartEvent,
-  setActiveId: React.Dispatch<React.SetStateAction<number | null>>,
+  setActiveId: React.Dispatch<React.SetStateAction<string | null>>,
   setActiveElement: React.Dispatch<React.SetStateAction<JSX.Element | null>>
 ) => {
-  setActiveId(event.active.id as number);
+  setActiveId(event.active.id as string);
   setActiveElement(event.active.data.current?.element || null);
 };
 
@@ -35,7 +35,7 @@ export const handleDragEnd = (
   event: DragEndEvent,
   verticalElements: VerticalElement[],
   setVerticalElements: React.Dispatch<React.SetStateAction<VerticalElement[]>>,
-  setActiveId: React.Dispatch<React.SetStateAction<number | null>>,
+  setActiveId: React.Dispatch<React.SetStateAction<string | null>>,
   setActiveElement: React.Dispatch<React.SetStateAction<JSX.Element | null>>
 ) => {
   const { active, over } = event;
@@ -61,27 +61,37 @@ export const handleDragEnd = (
     });
   } else if (active.data.current && overId.startsWith("editor-area-")) {
     // Case when you move horizontal element into the vertical element area
-    const verticalElementId = parseInt(overId.split("-")[2], 10);
+    const verticalElementId = parseInt(overId.split("-")[2], 10).toString();
     if (active.data.current.element) {
       const newElement = React.cloneElement(active.data.current.element, {
         key: `${verticalElementId}-${
-          verticalElements.find((verticalElement) => verticalElement.id === verticalElementId)?.horizontalElements.length
+          verticalElements.find(
+            (verticalElement) => verticalElement.id === verticalElementId
+          )?.horizontalElements.length
         }`,
       });
 
       setVerticalElements((prevVerticalElements) => {
-        const newVerticalElements = prevVerticalElements.map((verticalElement) =>
-          verticalElement.id === verticalElementId
-            ? { ...verticalElement, horizontalElements: [...verticalElement.horizontalElements, newElement] }
-            : verticalElement
+        const newVerticalElements = prevVerticalElements.map(
+          (verticalElement) =>
+            verticalElement.id === verticalElementId
+              ? {
+                  ...verticalElement,
+                  horizontalElements: [
+                    ...verticalElement.horizontalElements,
+                    newElement,
+                  ],
+                }
+              : verticalElement
         );
         console.log({
           editorarea: {
             newVerticalElements,
             new: {
               key: `${verticalElementId}-${
-                verticalElements.find((verticalElement) => verticalElement.id === verticalElementId)?.horizontalElements
-                  .length
+                verticalElements.find(
+                  (verticalElement) => verticalElement.id === verticalElementId
+                )?.horizontalElements.length
               }`,
             },
           },
@@ -94,7 +104,9 @@ export const handleDragEnd = (
     // Case when you move horizontal element iniside the vertical element area
     setVerticalElements((prevVerticalElements) => {
       return prevVerticalElements.map((verticalElement) => {
-        if (verticalElement.horizontalElements.some((el) => el.key === activeId)) {
+        if (
+          verticalElement.horizontalElements.some((el) => el.key === activeId)
+        ) {
           const oldIndex = verticalElement.horizontalElements.findIndex(
             (element) => element.key === activeId
           );
@@ -104,12 +116,20 @@ export const handleDragEnd = (
           console.log({
             activeIdNotoverIdAndKeyEqActiveId: {
               ...verticalElement,
-              horizontalElements: arrayMove(verticalElement.horizontalElements, oldIndex, newIndex),
+              horizontalElements: arrayMove(
+                verticalElement.horizontalElements,
+                oldIndex,
+                newIndex
+              ),
             },
           });
           return {
             ...verticalElement,
-            horizontalElements: arrayMove(verticalElement.horizontalElements, oldIndex, newIndex),
+            horizontalElements: arrayMove(
+              verticalElement.horizontalElements,
+              oldIndex,
+              newIndex
+            ),
           };
         }
         console.log({

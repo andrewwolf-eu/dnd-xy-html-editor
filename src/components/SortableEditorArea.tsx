@@ -3,15 +3,17 @@ import { useSortable } from "@dnd-kit/sortable";
 import EditorArea from "./EditorArea";
 import { CSS } from "@dnd-kit/utilities";
 import { EditorAreaProps } from "../DndXYHtmlEditor.types";
+import { useEditor } from "../context/EditorContext";
 
 const SortableEditorArea = ({ verticalElementConfiguration, ...props }: EditorAreaProps) => {
+  const { selectedVerticalElement } = useEditor();
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: `editor-${props.verticalElement.id}` });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    zIndex: props.selectedVerticalElement === props.verticalElement.id ? 1000 : "auto",
+    zIndex: selectedVerticalElement === props.verticalElement.id ? 1000 : "auto",
   };
 
   return (
@@ -19,8 +21,6 @@ const SortableEditorArea = ({ verticalElementConfiguration, ...props }: EditorAr
       <EditorArea
         verticalElementConfiguration={verticalElementConfiguration}
         verticalElement={props.verticalElement}
-        selectedVerticalElement={props.selectedVerticalElement}
-        selectedHorizontalElement={props.selectedHorizontalElement}
         onVerticalElementClick={props.onVerticalElementClick}
         onHorizontalElementClick={props.onHorizontalElementClick}
       />
