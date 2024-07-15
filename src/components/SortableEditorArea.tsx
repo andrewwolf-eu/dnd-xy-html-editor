@@ -2,19 +2,9 @@ import React from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import EditorArea from "./EditorArea";
 import { CSS } from "@dnd-kit/utilities";
-import { useEditor } from "../context/EditorContext";
-import { VerticalElement } from "../DndXYHtmlEditor.types";
+import { EditorAreaProps } from "../DndXYHtmlEditor.types";
 
-interface SortableEditorAreaProps {
-  verticalElement: VerticalElement;
-  selectedVerticalElement: number | null;
-  selectedHorizontalElement: string | null;
-  onVerticalElementClick: (verticalElementId: number) => void;
-  onHorizontalElementClick: (horizontalElementId: string) => void;
-}
-
-const SortableEditorArea: React.FC<SortableEditorAreaProps> = (props) => {
-  const { updateVerticalElementHorizontalElements, updateVerticalElementDimension } = useEditor();
+const SortableEditorArea = ({ verticalElementConfiguration, ...props }: EditorAreaProps) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: `editor-${props.verticalElement.id}` });
 
@@ -27,12 +17,8 @@ const SortableEditorArea: React.FC<SortableEditorAreaProps> = (props) => {
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <EditorArea
-        verticalElementId={props.verticalElement.id}
-        horizontalElements={props.verticalElement.horizontalElements}
-        dimensions={props.verticalElement.dimensions}
-        updateVerticalElementHorizontalElements={(horizontalElements) =>
-          updateVerticalElementHorizontalElements(props.verticalElement.id, horizontalElements)
-        }
+        verticalElementConfiguration={verticalElementConfiguration}
+        verticalElement={props.verticalElement}
         selectedVerticalElement={props.selectedVerticalElement}
         selectedHorizontalElement={props.selectedHorizontalElement}
         onVerticalElementClick={props.onVerticalElementClick}

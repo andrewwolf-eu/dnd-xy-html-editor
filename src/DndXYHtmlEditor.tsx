@@ -23,7 +23,7 @@ import { EditorProvider, useEditor } from "./context/EditorContext";
 import { DndXYHtmlEditorProps } from "DndXYHtmlEditor.types";
 import { styles } from "./DndXYHtmlEditor.styles";
 
-const AppContent = ({ htmlElements }: DndXYHtmlEditorProps) => {
+const AppContent = ({ verticalElementConfiguration = { enableDelete: true, enableDimensionSelector: true }, htmlElements }: DndXYHtmlEditorProps) => {
   const { verticalElements, addVerticalElement, setVerticalElements } = useEditor();
   const [activeId, setActiveId] = useState<number | null>(null);
   const [activeElement, setActiveElement] = useState<JSX.Element | null>(null);
@@ -72,6 +72,7 @@ const AppContent = ({ htmlElements }: DndXYHtmlEditorProps) => {
           >
             {verticalElements.map((verticalElement) => (
               <SortableEditorArea
+                verticalElementConfiguration={verticalElementConfiguration}
                 key={verticalElement.id}
                 verticalElement={verticalElement}
                 selectedVerticalElement={selectedVerticalElement}
@@ -84,12 +85,12 @@ const AppContent = ({ htmlElements }: DndXYHtmlEditorProps) => {
         </div>
         <div style={styles.toolbarContainer}>
           <div style={styles.controls}>
-            <button onClick={addVerticalElement}>Add Vertical Element</button>
+            {verticalElementConfiguration.enableDelete && <button onClick={addVerticalElement}>Add Vertical Element</button>}
             <button onClick={() => handleSave(verticalElements)}>Save</button>
             <button onClick={() => handleLoad(setVerticalElements)}>Load</button>
             <button onClick={() => handleOutput(verticalElements)}>HTML Output</button>
           </div>
-          <Toolbar htmlElements={htmlElements}/>
+          <Toolbar htmlElements={htmlElements} />
         </div>
         <DragOverlay>
           {activeId && activeElement ? (

@@ -31,9 +31,13 @@ const htmlElements = [
 
 export const Demo: Story = {
   render: (args: DndXYHtmlEditorProps) => {
-    return (<DndXYHtmlEditor htmlElements={args.htmlElements}/>)
+    return (<DndXYHtmlEditor {...args} />)
   },
   args: {
-    htmlElements
+    htmlElements,
+    verticalElementConfiguration: {
+      enableDelete: true,
+      enableDimensionSelector: true
+    }
   },
 };

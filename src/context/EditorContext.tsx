@@ -1,14 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
-import { VerticalElement } from "../DndXYHtmlEditor.types";
-
-interface EditorContextType {
-  verticalElements: VerticalElement[];
-  setVerticalElements: React.Dispatch<React.SetStateAction<VerticalElement[]>>;
-  addVerticalElement: () => void;
-  removeVerticalElement: (verticalElementId: number) => void;
-  updateVerticalElementHorizontalElements: (verticalElementId: number, horizontalElements: JSX.Element[]) => void;
-  updateVerticalElementDimension: (verticalElementId: number, dimensions: string[]) => void;
-}
+import { EditorContextType, VerticalElement } from "../DndXYHtmlEditor.types";
 
 const EditorContext = createContext<EditorContextType | undefined>(undefined);
 
