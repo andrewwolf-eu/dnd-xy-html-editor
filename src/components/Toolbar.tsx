@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useDraggable } from "@dnd-kit/core";
 import { ConfigurationComponentProps, DraggableItemProps, DynamicHTMLContentProps, htmlElement } from "DndXYHtmlEditor.types";
 import { styles } from "./Toolbar.styles";
@@ -7,7 +7,7 @@ import { useEditor } from "../context/EditorContext";
 import { parseIfJsonObject } from "../utils/dimensionUtils";
 
 // Define the DynamicHTMLContent component
-const DynamicHTMLContent: React.FC<DynamicHTMLContentProps> = ({ htmlElement }) => {
+export const DynamicHTMLContent: React.FC<DynamicHTMLContentProps> = ({ htmlElement }) => {
   const Element = htmlElement.element;
   return (<Element {...htmlElement.configuration} />);
 };
