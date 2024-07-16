@@ -57,6 +57,9 @@ export const Demo: Story = {
     verticalElementConfiguration: {
       enableDelete: true,
       enableDimensionSelector: true
+    },
+    formattedHtmlOutput: (htmlOutput: string) => {
+      console.log({ htmlOutput })
     }
   },
 };

@@ -56,7 +56,6 @@ export const handleDragEnd = (
       const newIndex = prevVerticalElements.findIndex(
         (verticalElement) => `editor-${verticalElement.id}` === overId
       );
-      console.log({ editor: { prevVerticalElements, oldIndex, newIndex } });
       return arrayMove(prevVerticalElements, oldIndex, newIndex);
     });
   } else if (active.data.current && overId.startsWith("editor-area-")) {
@@ -84,18 +83,6 @@ export const handleDragEnd = (
                 }
               : verticalElement
         );
-        console.log({
-          editorarea: {
-            newVerticalElements,
-            new: {
-              key: `${verticalElementId}-${
-                verticalElements.find(
-                  (verticalElement) => verticalElement.id === verticalElementId
-                )?.horizontalElements.length
-              }`,
-            },
-          },
-        });
         return newVerticalElements;
       });
     } else {
@@ -113,16 +100,6 @@ export const handleDragEnd = (
           const newIndex = verticalElement.horizontalElements.findIndex(
             (element) => element.key === overId
           );
-          console.log({
-            activeIdNotoverIdAndKeyEqActiveId: {
-              ...verticalElement,
-              horizontalElements: arrayMove(
-                verticalElement.horizontalElements,
-                oldIndex,
-                newIndex
-              ),
-            },
-          });
           return {
             ...verticalElement,
             horizontalElements: arrayMove(
@@ -132,11 +109,6 @@ export const handleDragEnd = (
             ),
           };
         }
-        console.log({
-          activeIdNotoverId: {
-            verticalElement,
-          },
-        });
         return verticalElement;
       });
     });
@@ -145,11 +117,17 @@ export const handleDragEnd = (
 
 export const handleSave = (verticalElements: VerticalElement[]) => {
   try {
-    const serializedVerticalElements = verticalElements.map((verticalElement) => ({
-      ...verticalElement,
-      horizontalElements: verticalElement.horizontalElements.map(serializeElement),
-    }));
-    localStorage.setItem("DndXYHtmlEditor", JSON.stringify(serializedVerticalElements));
+    const serializedVerticalElements = verticalElements.map(
+      (verticalElement) => ({
+        ...verticalElement,
+        horizontalElements:
+          verticalElement.horizontalElements.map(serializeElement),
+      })
+    );
+    localStorage.setItem(
+      "DndXYHtmlEditor",
+      JSON.stringify(serializedVerticalElements)
+    );
     console.log("Saved successfully!");
   } catch (error) {
     console.error("Error saving to localStorage", error);
@@ -162,10 +140,13 @@ export const handleLoad = (
   try {
     const savedVerticalElements = localStorage.getItem("DndXYHtmlEditor");
     if (savedVerticalElements) {
-      const parsedVerticalElements = JSON.parse(savedVerticalElements).map((verticalElement: VerticalElement) => ({
-        ...verticalElement,
-        horizontalElements: verticalElement.horizontalElements.map(deserializeElement),
-      }));
+      const parsedVerticalElements = JSON.parse(savedVerticalElements).map(
+        (verticalElement: VerticalElement) => ({
+          ...verticalElement,
+          horizontalElements:
+            verticalElement.horizontalElements.map(deserializeElement),
+        })
+      );
       setVerticalElements(parsedVerticalElements);
       console.log("Loaded vertical elements:", parsedVerticalElements);
     }
@@ -178,7 +159,10 @@ const convertElementToHTML = (element: JSX.Element): string => {
   return ReactDOMServer.renderToString(element);
 };
 
-export const handleOutput = (verticalElements: VerticalElement[]) => {
+export const handleOutput = (
+  verticalElements: VerticalElement[],
+  formattedHtmlOutput?: (htmlOutput: string) => void
+) => {
   const htmlContent = verticalElements
     .map((verticalElement) => {
       const rows: JSX.Element[][] = [];
@@ -214,9 +198,7 @@ export const handleOutput = (verticalElements: VerticalElement[]) => {
     })
     .join("");
 
-  const newWindow = window.open();
-  if (newWindow) {
-    newWindow.document.write(`
+  const formattedHtmlContent = `
       <html>
         <head>
           <style>
@@ -248,7 +230,13 @@ export const handleOutput = (verticalElements: VerticalElement[]) => {
           ${htmlContent}
         </body>
       </html>
-    `);
+    `;
+
+  formattedHtmlOutput && formattedHtmlOutput(formattedHtmlContent);
+
+  const newWindow = window.open();
+  if (newWindow) {
+    newWindow.document.write(formattedHtmlContent);
     newWindow.document.close();
   }
 };

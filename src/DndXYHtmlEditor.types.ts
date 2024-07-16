@@ -1,6 +1,7 @@
 export interface DndXYHtmlEditorProps
   extends VerticalElementConfigurationProps {
   htmlElements: htmlElement[];
+  formattedHtmlOutput?: (htmlOutput: string) => void;
 }
 
 export interface EditorAreaProps

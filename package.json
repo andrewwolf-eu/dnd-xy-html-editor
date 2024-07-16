@@ -12,8 +12,8 @@
     "publish": "npm publish --access public"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Andrew Wolf",
+  "license": "MIT",
   "description": "",
   "dependencies": {
     "@dnd-kit/core": "6.1.0",

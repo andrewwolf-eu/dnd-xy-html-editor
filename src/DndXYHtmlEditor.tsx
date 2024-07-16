@@ -23,7 +23,7 @@ import { EditorProvider, useEditor } from "./context/EditorContext";
 import { DndXYHtmlEditorProps } from "DndXYHtmlEditor.types";
 import { styles } from "./DndXYHtmlEditor.styles";
 
-const AppContent = ({ verticalElementConfiguration = { enableDelete: true, enableDimensionSelector: true }, htmlElements }: DndXYHtmlEditorProps) => {
+const AppContent = ({ verticalElementConfiguration = { enableDelete: true, enableDimensionSelector: true }, htmlElements, formattedHtmlOutput }: DndXYHtmlEditorProps) => {
   const {
     setHtmlElements,
     verticalElements, setVerticalElements,
@@ -90,9 +90,9 @@ const AppContent = ({ verticalElementConfiguration = { enableDelete: true, enabl
         <div style={styles.toolbarContainer}>
           <div style={styles.controls}>
             {verticalElementConfiguration.enableDelete && <button onClick={addVerticalElement}>Add Vertical Element</button>}
-            <button onClick={() => handleSave(verticalElements)}>Save</button>
-            <button onClick={() => handleLoad(setVerticalElements)}>Load</button>
-            <button onClick={() => handleOutput(verticalElements)}>HTML Output</button>
+            {/* <button onClick={() => handleSave(verticalElements)}>Save</button>
+            <button onClick={() => handleLoad(setVerticalElements)}>Load</button> */}
+            {formattedHtmlOutput && <button onClick={() => handleOutput(verticalElements, formattedHtmlOutput)}>HTML Output</button>}
           </div>
           <Toolbar />
         </div>
