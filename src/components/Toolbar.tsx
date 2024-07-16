@@ -4,6 +4,7 @@ import { ConfigurationComponentProps, DraggableItemProps, DynamicHTMLContentProp
 import { styles } from "./Toolbar.styles";
 import { demoHtmlElements } from "./DemoHtmlElements";
 import { useEditor } from "../context/EditorContext";
+import { parseIfJsonObject } from "../utils/dimensionUtils";
 
 // Define the DynamicHTMLContent component
 const DynamicHTMLContent: React.FC<DynamicHTMLContentProps> = ({ htmlElement }) => {
@@ -17,19 +18,23 @@ const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ configu
     // Initialize the form state based on the configuration object
     const initialState: { [key: string]: any } = {};
     for (const key in configuration) {
-      if (typeof configuration[key] !== 'object') {
-        initialState[key] = configuration[key];
-      }
+      initialState[key] = configuration[key];
     }
     return initialState;
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
+    const result = parseIfJsonObject(value);
+    if (result) {
+      value = result;
+    }
+
     setFormState((prevState) => ({
       ...prevState,
       [name]: value
     }));
+
     setHtmlElements((prevElements: htmlElement[]) => {
       return [
         ...prevElements.map(((prevElement: htmlElement) => {
@@ -48,6 +53,9 @@ const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ configu
         }))
       ]
     });
+  };
+
+  const handleSaveChanges = () => {
   };
 
   const renderInput = (key: string, value: any) => {
@@ -91,10 +99,16 @@ const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ configu
         </div>
       );
     } else if (typeof value === 'object' && !Array.isArray(value)) {
+      const stringValue = JSON.stringify(formState[key])
       return (
         <div key={key} style={value}>
-          {/* Assume it's a style object */}
-          <p style={value}>{key} (styled):</p>
+          <label style={value}>{key}:</label>
+          <input
+            type="text"
+            name={key}
+            value={stringValue}
+            onChange={handleChange}
+          />
         </div>
       );
     } else {
@@ -108,6 +122,7 @@ const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ configu
       {Object.entries(configuration).map(([key, value]) =>
         renderInput(key, value)
       )}
+      <button onClick={handleSaveChanges}>Save Changes</button>
     </div>
   );
 };

@@ -20,8 +20,8 @@ export const styles: { [key: string]: CSSProperties } = {
   },
   editorArea: {
     border: "2px dashed #ccc",
-    minHeight: '300px',
-    padding: "10px 10px 50px 10px",
+    minHeight: '500px',
+    padding: "10px 10px 500px 10px",
     backgroundColor: "#fff",
     position: "relative",
   },

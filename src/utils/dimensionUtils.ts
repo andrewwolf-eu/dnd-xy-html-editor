@@ -27,3 +27,15 @@ export function getDimensionKeyValue(object:Record<string, string[]>, searchArra
 export const getDimensionValue = (key: string): string[] => {
   return dimensionMapping[key] || ["100%"];
 };
+
+export const parseIfJsonObject = (str) => {
+  try {
+    const parsed = JSON.parse(str);
+    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+      return parsed;
+    }
+  } catch (e) {
+    // Parsing failed, not a valid JSON object
+  }
+  return null; // Return null if the string is not a valid JSON object
+}
