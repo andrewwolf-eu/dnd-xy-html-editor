@@ -23,6 +23,7 @@ import EmailModal from "./components/EmailModal";
 import { EditorProvider, useEditor } from "./context/EditorContext";
 import { DndXYHtmlEditorProps } from "DndXYHtmlEditor.types";
 import { styles } from "./DndXYHtmlEditor.styles";
+import { registerComponent } from "../src/components/componentRegistry";
 
 const AppContent = ({ verticalElementConfiguration = { enableDelete: true, enableDimensionSelector: true }, htmlElements, formattedHtmlOutput }: DndXYHtmlEditorProps) => {
   const {
@@ -39,6 +40,9 @@ const AppContent = ({ verticalElementConfiguration = { enableDelete: true, enabl
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
   useEffect(() => {
+    htmlElements.forEach((htmlElement)=>{
+      registerComponent(htmlElement.configuration.elementIdentifier, htmlElement.element)
+    })
     setHtmlElements(htmlElements)
 
     const updateHeight = () => setContainerHeight(window.innerHeight);
@@ -91,8 +95,8 @@ const AppContent = ({ verticalElementConfiguration = { enableDelete: true, enabl
         <div style={styles.toolbarContainer}>
           <div style={styles.controls}>
             {verticalElementConfiguration.enableDelete && <button onClick={addVerticalElement}>Add Vertical Element</button>}
-            {/* <button onClick={() => handleSave(verticalElements)}>Save</button>
-            <button onClick={() => handleLoad(setVerticalElements)}>Load</button> */}
+            <button onClick={() => handleSave(verticalElements)}>Save</button>
+            <button onClick={() => handleLoad(setVerticalElements)}>Load</button>
             <button onClick={() => handleOutput(verticalElements, formattedHtmlOutput)}>HTML Output</button>
           </div>
           <EmailModal />

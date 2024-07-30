@@ -1,13 +1,13 @@
 import React from "react";
 import ReactDOMServer from "react-dom/server";
 import { arrayMove } from "@dnd-kit/sortable";
-import { VerticalElement } from "../DndXYHtmlEditor.types";
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
+import { getComponent } from "../components/componentRegistry";
+import { VerticalElement } from "../DndXYHtmlEditor.types";
 
 // Utility to serialize elements
 const serializeElement = (horizontalElements: JSX.Element) => {
   return {
-    type: horizontalElements.type,
     key: horizontalElements.key,
     props: horizontalElements.props,
   };
@@ -15,9 +15,19 @@ const serializeElement = (horizontalElements: JSX.Element) => {
 
 // Utility to deserialize elements
 const deserializeElement = (serializedElement: any) => {
+  const htmlElementIdentifier = serializedElement.props.htmlElement
+    ? serializedElement.props.htmlElement.configuration.elementIdentifier
+    : serializedElement.props.elementIdentifier;
+  const htmlElementProps = serializedElement.props.htmlElement
+    ? serializedElement.props.htmlElement.configuration
+    : serializedElement.props;
+  const Component = getComponent(htmlElementIdentifier);
   return React.createElement(
-    serializedElement.type,
-    { ...serializedElement.props, key: serializedElement.key },
+    Component,
+    {
+      ...htmlElementProps,
+      key: serializedElement.key,
+    },
     serializedElement.props.children
   );
 };
@@ -48,7 +58,7 @@ export const handleDragEnd = (
   if (!over) return;
 
   if (activeId.startsWith("editor-") && overId.startsWith("editor-")) {
-    // Case when you move the vertical element area
+    // console.log("Case 1: when you move the vertical element area");
     setVerticalElements((prevVerticalElements) => {
       const oldIndex = prevVerticalElements.findIndex(
         (verticalElement) => `editor-${verticalElement.id}` === activeId
@@ -59,7 +69,7 @@ export const handleDragEnd = (
       return arrayMove(prevVerticalElements, oldIndex, newIndex);
     });
   } else if (active.data.current && overId.startsWith("editor-area-")) {
-    // Case when you move horizontal element into the vertical element area
+    // console.log("Case 2: when you move horizontal element into the vertical element area");
     const verticalElementId = parseInt(overId.split("-")[2], 10).toString();
     if (active.data.current.element) {
       const newElement = React.cloneElement(active.data.current.element, {
@@ -88,7 +98,7 @@ export const handleDragEnd = (
     } else {
     }
   } else if (activeId !== overId) {
-    // Case when you move horizontal element iniside the vertical element area
+    // console.log("Case 3: when you move horizontal element iniside the vertical element area");
     setVerticalElements((prevVerticalElements) => {
       return prevVerticalElements.map((verticalElement) => {
         if (
@@ -171,10 +181,7 @@ export const handleOutput = (
       if (isFullWidth) {
         // If dimension is 100%, each element gets its own container
         return verticalElement.horizontalElements
-          .map(
-            (element) =>
-              `<div class="flex-container"><div class="flex-row"><div class="flex-column" style="flex-basis: 100%; flex-grow: 1; flex-shrink: 0;">${convertElementToHTML(element)}</div></div></div>`
-          )
+          .map((element) => convertElementToHTML(element))
           .join("");
       }
 

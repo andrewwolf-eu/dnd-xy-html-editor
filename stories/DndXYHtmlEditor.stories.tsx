@@ -20,6 +20,7 @@ const htmlElements: htmlElement[] = [
   {
     element: DivElement,
     configuration: {
+      elementIdentifier: 'DivElement',
       key: 'div-element',
       title: 'Div Element Title1',
       description: 'Div Element Description1',
@@ -30,6 +31,7 @@ const htmlElements: htmlElement[] = [
   {
     element: ImageElement,
     configuration: {
+      elementIdentifier: 'ImageElement',
       key: 'image-element',
       src: 'https://via.placeholder.com/50',
       alt: 'Configured Image Element',
@@ -38,12 +40,8 @@ const htmlElements: htmlElement[] = [
   {
     element: TextElement,
     configuration: {
+      elementIdentifier: 'TextElement',
       key: 'text-element',
-      children: (
-        <>
-          <strong>Configured Text Element</strong> with <em>updated nested elements</em>.
-        </>
-      ),
     },
   },
 ];
@@ -58,8 +56,8 @@ export const Demo: Story = {
       enableDelete: true,
       enableDimensionSelector: true
     },
-    formattedHtmlOutput: (htmlOutput: string) => {
+    /* formattedHtmlOutput: (htmlOutput: string) => {
       console.log({ htmlOutput })
-    }
+    } */
   },
 };

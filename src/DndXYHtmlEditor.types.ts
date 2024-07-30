@@ -32,6 +32,7 @@ export interface EditorContextType {
 type htmlElementFunction = (props: htmlElementConfiguration) => JSX.Element;
 
 export interface htmlElementConfiguration {
+  elementIdentifier: string;
   [key: string]: any;
 }
 
