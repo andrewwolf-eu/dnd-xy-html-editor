@@ -128,7 +128,7 @@ const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ configu
 };
 
 const Toolbar = () => {
-  const { htmlElements } = useEditor();
+  const { selectedHorizontalElement, htmlElements } = useEditor();
   const toolbarhtmlElements = htmlElements ? htmlElements : demoHtmlElements
   // State to manage active tab and selected element
   const [activeTab, setActiveTab] = useState<string>('elements');

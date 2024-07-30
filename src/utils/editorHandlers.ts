@@ -165,6 +165,19 @@ export const handleOutput = (
 ) => {
   const htmlContent = verticalElements
     .map((verticalElement) => {
+      // Check if dimension is 100%
+      const isFullWidth = verticalElement.dimensions.some((d) => d === "100%");
+
+      if (isFullWidth) {
+        // If dimension is 100%, each element gets its own container
+        return verticalElement.horizontalElements
+          .map(
+            (element) =>
+              `<div class="flex-container"><div class="flex-row"><div class="flex-column" style="flex-basis: 100%; flex-grow: 1; flex-shrink: 0;">${convertElementToHTML(element)}</div></div></div>`
+          )
+          .join("");
+      }
+
       const rows: JSX.Element[][] = [];
       for (
         let i = 0;
@@ -199,40 +212,42 @@ export const handleOutput = (
     .join("");
 
   const formattedHtmlContent = `
-      <html>
-        <head>
-          <style>
-            body {
-              margin: 0;
-            }
-            .flex-container {
-              display: flex;
-              flex-direction: column;
-            }
-            .flex-row {
-              display: flex;
-              width: 100%;
-            }
-            .flex-column {
-              border: 1px solid #ddd;
-              background-color: #fff;
-              min-height: 100px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              position: relative;
-              flex-grow: 1;
-              flex-shrink: 0;
-            }
-          </style>
-        </head>
-        <body>
-          ${htmlContent}
-        </body>
-      </html>
-    `;
+    <html>
+      <head>
+        <style>
+          body {
+            margin: 0;
+          }
+          .flex-container {
+            display: flex;
+            flex-direction: column;
+          }
+          .flex-row {
+            display: flex;
+            width: 100%;
+          }
+          .flex-column {
+            border: 1px solid #ddd;
+            background-color: #fff;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            flex-grow: 1;
+            flex-shrink: 0;
+          }
+        </style>
+      </head>
+      <body>
+        ${htmlContent}
+      </body>
+    </html>
+  `;
 
-  formattedHtmlOutput && formattedHtmlOutput(formattedHtmlContent);
+  if (formattedHtmlOutput) {
+    return formattedHtmlOutput(formattedHtmlContent);
+  }
 
   const newWindow = window.open();
   if (newWindow) {

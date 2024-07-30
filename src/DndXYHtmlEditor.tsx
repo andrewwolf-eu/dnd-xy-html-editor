@@ -19,6 +19,7 @@ import {
   handleLoad,
   handleOutput,
 } from "./utils/editorHandlers";
+import EmailModal from "./components/EmailModal";
 import { EditorProvider, useEditor } from "./context/EditorContext";
 import { DndXYHtmlEditorProps } from "DndXYHtmlEditor.types";
 import { styles } from "./DndXYHtmlEditor.styles";
@@ -92,8 +93,9 @@ const AppContent = ({ verticalElementConfiguration = { enableDelete: true, enabl
             {verticalElementConfiguration.enableDelete && <button onClick={addVerticalElement}>Add Vertical Element</button>}
             {/* <button onClick={() => handleSave(verticalElements)}>Save</button>
             <button onClick={() => handleLoad(setVerticalElements)}>Load</button> */}
-            {formattedHtmlOutput && <button onClick={() => handleOutput(verticalElements, formattedHtmlOutput)}>HTML Output</button>}
+            <button onClick={() => handleOutput(verticalElements, formattedHtmlOutput)}>HTML Output</button>
           </div>
+          <EmailModal />
           <Toolbar />
         </div>
         <DragOverlay>
