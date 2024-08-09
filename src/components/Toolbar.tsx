@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDraggable } from "@dnd-kit/core";
-import { ConfigurationComponentProps, DraggableItemProps, DynamicHTMLContentProps, htmlElement } from "DndXYHtmlEditor.types";
+import { ConfigurationComponentProps, DraggableItemProps, DynamicHTMLContentProps, htmlElement, VerticalElement } from "DndXYHtmlEditor.types";
 import { styles } from "./Toolbar.styles";
 import { demoHtmlElements } from "./DemoHtmlElements";
 import { useEditor } from "../context/EditorContext";
@@ -13,15 +13,20 @@ export const DynamicHTMLContent: React.FC<DynamicHTMLContentProps> = ({ htmlElem
 };
 
 const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ configuration }) => {
-  const { setHtmlElements } = useEditor();
-  const [formState, setFormState] = useState(() => {
+  const { setHtmlElements, setVerticalElements } = useEditor();
+  const getInitialState = () => {
     // Initialize the form state based on the configuration object
     const initialState: { [key: string]: any } = {};
     for (const key in configuration) {
       initialState[key] = configuration[key];
     }
     return initialState;
-  });
+  }
+  const [formState, setFormState] = useState(getInitialState);
+
+  useEffect(() => {
+    setFormState(getInitialState)
+  }, [configuration])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     let { name, value } = e.target;
@@ -35,24 +40,66 @@ const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ configu
       [name]: value
     }));
 
-    setHtmlElements((prevElements: htmlElement[]) => {
-      return [
-        ...prevElements.map(((prevElement: htmlElement) => {
-          if (prevElement.configuration.key !== configuration.key) {
-            return prevElement
-          } else {
-            const updatedElement = {
-              ...prevElement,
-              configuration: {
-                ...prevElement.configuration,
-                [name]: value
+    if (configuration.key && !configuration.selectedHorizontalElement) {
+      setHtmlElements((prevElements: htmlElement[]) => {
+        return [
+          ...prevElements.map(((prevElement: htmlElement) => {
+            if (prevElement.configuration.key !== configuration.key) {
+              return prevElement
+            } else {
+              const updatedElement = {
+                ...prevElement,
+                configuration: {
+                  ...prevElement.configuration,
+                  [name]: value
+                }
               }
+              return updatedElement
             }
-            return updatedElement
+          }))
+        ]
+      });
+    } else {
+      setVerticalElements((prevElements: VerticalElement[]) => {
+        return prevElements.map((prevElement: VerticalElement) => {
+          if (prevElement.id !== configuration.verticalElement) {
+            return prevElement;
           }
-        }))
-      ]
-    });
+
+          const updatedHorizontalElements = prevElement.horizontalElements.map(horizontalElement => {
+            if (horizontalElement.key !== configuration.selectedHorizontalElement) {
+              return horizontalElement;
+            }
+
+            const updatedProps = horizontalElement.props.hasOwnProperty("htmlElement")
+              ? {
+                ...horizontalElement.props,
+                htmlElement: {
+                  ...horizontalElement.props.htmlElement,
+                  configuration: {
+                    ...horizontalElement.props.htmlElement.configuration,
+                    [name]: value
+                  }
+                }
+              }
+              : {
+                ...horizontalElement.props,
+                [name]: value
+              };
+
+            return {
+              ...horizontalElement,
+              props: updatedProps
+            };
+          });
+
+          return {
+            ...prevElement,
+            horizontalElements: updatedHorizontalElements
+          };
+        });
+      });
+    }
   };
 
   const handleSaveChanges = () => {
@@ -118,7 +165,7 @@ const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ configu
 
   return (
     <div>
-      <p>Configuration for: {configuration.key || 'unknown'}</p>
+      {/* <p>Configuration for: {configuration.key || 'unknown'}</p> */}
       {Object.entries(configuration).map(([key, value]) =>
         renderInput(key, value)
       )}
@@ -127,12 +174,38 @@ const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ configu
   );
 };
 
+const ConfigurationForSelectedElement: React.FC<{
+  selectedElement: {
+    id: string;
+    HtmlElement: htmlElement;
+  }, selectedHorizontalElement: string, verticalElements: VerticalElement[]
+}> = ({ selectedElement, selectedHorizontalElement, verticalElements }) => {
+  if (selectedElement.HtmlElement) {
+    return <ConfigurationComponent configuration={selectedElement.HtmlElement.configuration} />
+  }
+  if (selectedHorizontalElement) {
+    const verticalElement = selectedHorizontalElement.split("-")[0];
+    const selectedConatainerElement = verticalElements[verticalElement].horizontalElements.filter((horizontalElement) => horizontalElement.key === selectedHorizontalElement)
+    if (selectedConatainerElement.length === 0) {
+      return
+    }
+    if (selectedConatainerElement[0].props.hasOwnProperty("htmlElement")) {
+      return <ConfigurationComponent configuration={{ ...selectedConatainerElement[0].props.htmlElement.configuration, verticalElement, selectedHorizontalElement }} />
+    } else {
+      return <ConfigurationComponent configuration={{ ...selectedConatainerElement[0].props, verticalElement, selectedHorizontalElement }} />
+    }
+  }
+
+  return <div>Please select an element to configure</div>
+}
+
 const Toolbar = () => {
-  const { selectedHorizontalElement, htmlElements } = useEditor();
+  const { selectedHorizontalElement, setSelectedHorizontalElement, verticalElements, htmlElements } = useEditor();
   const toolbarhtmlElements = htmlElements ? htmlElements : demoHtmlElements
   // State to manage active tab and selected element
   const [activeTab, setActiveTab] = useState<string>('elements');
-  const [selectedElement, setSelectedElement] = useState<{ id: string, HtmlElement: htmlElement }>({ id: '', HtmlElement: null });
+  const selectedElementInitState = { id: '', HtmlElement: null }
+  const [selectedElement, setSelectedElement] = useState<{ id: string, HtmlElement: htmlElement }>(selectedElementInitState);
 
   // Function to handle tab switch
   const handleTabChange = (tab: string) => {
@@ -140,8 +213,17 @@ const Toolbar = () => {
   };
 
   const handleElementSelect = (id: string, HtmlElement: htmlElement) => {
+    setSelectedHorizontalElement(null)
     setSelectedElement({ id, HtmlElement });
   };
+
+  useEffect(() => {
+    if (selectedHorizontalElement) {
+      setSelectedElement(selectedElementInitState);
+    }
+  }, [
+    selectedHorizontalElement
+  ])
 
   return (
     <div style={styles.toolbar}>
@@ -165,6 +247,7 @@ const Toolbar = () => {
                 key={index}
                 id={id}
                 element={<DynamicHTMLContent htmlElement={item} />}
+                toolbarPreview={item.toolbarPreview ? item.toolbarPreview : <DynamicHTMLContent htmlElement={item} />}
                 selectedElementId={selectedElement.id}
                 onMouseDown={(e) => {
                   e.stopPropagation();
@@ -177,18 +260,14 @@ const Toolbar = () => {
       )}
       {activeTab === 'configuration' && (
         <div style={styles.tabContent}>
-          {selectedElement.HtmlElement ? (
-            <ConfigurationComponent configuration={selectedElement.HtmlElement.configuration} />
-          ) : (
-            <div>Please select an element to configure</div>
-          )}
+          <ConfigurationForSelectedElement selectedElement={selectedElement} selectedHorizontalElement={selectedHorizontalElement} verticalElements={verticalElements} />
         </div>
       )}
     </div>
   );
 };
 
-const DraggableItem: React.FC<DraggableItemProps> = ({ id, element, onMouseDown, selectedElementId }) => {
+const DraggableItem: React.FC<DraggableItemProps> = ({ id, element, toolbarPreview, onMouseDown, selectedElementId }) => {
   const { attributes, listeners, setNodeRef } = useDraggable({
     id,
     data: {
@@ -216,7 +295,7 @@ const DraggableItem: React.FC<DraggableItemProps> = ({ id, element, onMouseDown,
         ...(isSelectedItem ? styles.draggableItemContainerSelected : {}),
       }}
     >
-      {element}
+      {toolbarPreview}
     </div>
   );
 };

@@ -19,6 +19,7 @@ type Story = StoryObj<typeof meta>;
 const htmlElements: htmlElement[] = [
   {
     element: DivElement,
+    toolbarPreview: <p>{'DivElement'}</p>,
     configuration: {
       elementIdentifier: 'DivElement',
       key: 'div-element',
@@ -30,6 +31,7 @@ const htmlElements: htmlElement[] = [
   },
   {
     element: ImageElement,
+    toolbarPreview: <p>{'ImageElement'}</p>,
     configuration: {
       elementIdentifier: 'ImageElement',
       key: 'image-element',
@@ -39,6 +41,7 @@ const htmlElements: htmlElement[] = [
   },
   {
     element: TextElement,
+    toolbarPreview: <p>{'TextElement'}</p>,
     configuration: {
       elementIdentifier: 'TextElement',
       key: 'text-element',

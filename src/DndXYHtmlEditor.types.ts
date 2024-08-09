@@ -19,9 +19,9 @@ export interface EditorContextType {
   setSelectedHorizontalElement: React.Dispatch<React.SetStateAction<string>>;
   addVerticalElement: () => void;
   removeVerticalElement: (verticalElementId: string) => void;
-  updateVerticalElementHorizontalElements: (
+  removeHorizontalElementFromVerticalElement: (
     verticalElementId: string,
-    horizontalElements: JSX.Element[]
+    horizontalElement: JSX.Element
   ) => void;
   updateVerticalElementDimension: (
     verticalElementId: string,
@@ -38,6 +38,7 @@ export interface htmlElementConfiguration {
 
 export interface htmlElement {
   element: htmlElementFunction;
+  toolbarPreview?: JSX.Element;
   configuration: htmlElementConfiguration;
 }
 
@@ -58,6 +59,7 @@ export interface VerticalElement {
 export interface DraggableItemProps {
   id: string;
   element: JSX.Element;
+  toolbarPreview?: JSX.Element;
   onMouseDown: (e: any) => void;
   selectedElementId: string;
 }

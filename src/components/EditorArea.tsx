@@ -19,16 +19,16 @@ const EditorArea = ({
   const {
     selectedVerticalElement,
     selectedHorizontalElement,
-    updateVerticalElementHorizontalElements,
+    removeHorizontalElementFromVerticalElement,
     removeVerticalElement
   } = useEditor();
   const { setNodeRef } = useDroppable({
     id: `editor-area-${verticalElementId}`,
   });
 
-  const handleRemoveItem = (index: number, event: React.MouseEvent) => {
+  const handleRemoveItem = (element: JSX.Element, event: React.MouseEvent) => {
     event.stopPropagation();
-    updateVerticalElementHorizontalElements(verticalElementId, horizontalElements.filter((_, i) => i !== index));
+    removeHorizontalElementFromVerticalElement(verticalElementId, element);
   };
 
   const rows: JSX.Element[][] = [];
@@ -88,7 +88,7 @@ const EditorArea = ({
                         <div style={styles.editorElement}>
                           {element}
                           <IconButton
-                            onMouseDown={(e) => handleRemoveItem(index, e)}
+                            onMouseDown={(e) => handleRemoveItem(element, e)}
                             style={styles.deleteButton}
                           >
                             <Delete />

@@ -40,7 +40,7 @@ const AppContent = ({ verticalElementConfiguration = { enableDelete: true, enabl
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
   useEffect(() => {
-    htmlElements.forEach((htmlElement)=>{
+    htmlElements.forEach((htmlElement) => {
       registerComponent(htmlElement.configuration.elementIdentifier, htmlElement.element)
     })
     setHtmlElements(htmlElements)
@@ -105,7 +105,7 @@ const AppContent = ({ verticalElementConfiguration = { enableDelete: true, enabl
         <DragOverlay>
           {activeId && activeElement ? (
             <div style={styles.dragOverlay}>
-              {React.cloneElement(activeElement)}
+              {activeElement.props.htmlElement.toolbarPreview ? activeElement.props.htmlElement.toolbarPreview : React.cloneElement(activeElement)}
             </div>
           ) : null}
         </DragOverlay>

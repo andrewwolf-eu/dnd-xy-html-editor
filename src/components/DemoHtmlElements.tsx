@@ -24,6 +24,7 @@ export const TextElement = (props: htmlElementConfiguration) => {
 export const demoHtmlElements: htmlElement[] = [
   {
     element: DivElement,
+    toolbarPreview: <p>{'DivElement'}</p>,
     configuration: {
       elementIdentifier: 'DivElement',
       key: 'div-element',
@@ -35,6 +36,7 @@ export const demoHtmlElements: htmlElement[] = [
   },
   {
     element: ImageElement,
+    toolbarPreview: <p>{'ImageElement'}</p>,
     configuration: {
       elementIdentifier: 'ImageElement',
       key: 'image-element',
@@ -44,6 +46,7 @@ export const demoHtmlElements: htmlElement[] = [
   },
   {
     element: TextElement,
+    // toolbarPreview: <p>{'TextElement'}</p>,
     configuration: {
       elementIdentifier: 'TextElement',
       key: 'text-element',

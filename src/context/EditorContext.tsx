@@ -34,12 +34,35 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({
     );
   };
 
-  const updateVerticalElementHorizontalElements = (verticalElementId: string, horizontalElements: JSX.Element[]) => {
-    setVerticalElements((prevVerticalElements) =>
-      prevVerticalElements.map((verticalElement) =>
-        verticalElement.id === verticalElementId ? { ...verticalElement, horizontalElements } : verticalElement
-      )
-    );
+  const removeHorizontalElementFromVerticalElement = (verticalElementId: string, horizontalElement: JSX.Element) => {
+    setVerticalElements((prevVerticalElements: VerticalElement[]) => {
+      console.log({ verticalElementId, prevVerticalElements });
+  
+      return prevVerticalElements.map((verticalElement: VerticalElement) => {
+        if (verticalElement.id === verticalElementId) {
+          // Filter out the element to be removed
+          const updatedHorizontalElements = verticalElement.horizontalElements.filter(
+            horizontalEl => horizontalEl.key !== horizontalElement.key
+          );
+  
+          // Regenerate the keys based on the index in the array
+          const rekeyedHorizontalElements = updatedHorizontalElements.map((horizontalEl, index) => {
+            return {
+              ...horizontalEl,
+              key: `0-${index}`  // Adjust the key format as needed
+            };
+          });
+  
+          // Return the updated vertical element with rekeyed horizontal elements
+          return {
+            ...verticalElement,
+            horizontalElements: rekeyedHorizontalElements
+          };
+        } else {
+          return verticalElement;
+        }
+      });
+    });
   };
 
   const updateVerticalElementDimension = (verticalElementId: string, dimensions: string[]) => {
@@ -63,7 +86,7 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({
         setSelectedHorizontalElement,
         addVerticalElement,
         removeVerticalElement,
-        updateVerticalElementHorizontalElements,
+        removeHorizontalElementFromVerticalElement,
         updateVerticalElementDimension,
       }}
     >
