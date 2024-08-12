@@ -1,5 +1,5 @@
 import React from "react"
-import { htmlElementConfiguration, htmlElement } from "DndXYHtmlEditor.types"
+import { htmlElementConfiguration, HtmlElement } from "DndXYHtmlEditor.types"
 
 export const DivElement = (props: htmlElementConfiguration) => {
   return <div>
@@ -21,7 +21,7 @@ export const TextElement = (props: htmlElementConfiguration) => {
   </p>
 }
 
-export const demoHtmlElements: htmlElement[] = [
+export const demoHtmlElements: HtmlElement[] = [
   {
     element: DivElement,
     toolbarPreview: <p>{'DivElement'}</p>,

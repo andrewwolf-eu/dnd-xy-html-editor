@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { Button, Container } from '@mui/material';
+import { Container } from '@mui/material';
 import EmailForm from './EmailForm';
+import { Translations } from 'DndXYHtmlEditor.types';
 
-const EmailModal: React.FC = () => {
+const EmailModal: React.FC<{ translations: Translations }> = ({ translations }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <Container>
       <button onClick={() => setIsModalOpen(true)}>
-        Send e-mail
+        {translations?.actionButtons?.sendEmail ?? 'Send e-mail'}
       </button>
       <EmailForm
         open={isModalOpen}

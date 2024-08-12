@@ -49,7 +49,7 @@ const EditorArea = ({
       {verticalElementConfiguration.enableDimensionSelector && <DimensionSelector
         verticalElementId={verticalElementId}
       />}
-      {verticalElementConfiguration.enableDelete && <IconButton
+      {verticalElementConfiguration.enableMultipleContainer && <IconButton
         onMouseDown={() => removeVerticalElement(verticalElementId)}
       >
         <Delete />

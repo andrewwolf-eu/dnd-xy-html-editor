@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
-import { EditorContextType, htmlElement, VerticalElement } from "../DndXYHtmlEditor.types";
+import { EditorContextType, HtmlElement, VerticalElement } from "../DndXYHtmlEditor.types";
 
 const EditorContext = createContext<EditorContextType | undefined>(undefined);
 
@@ -14,7 +14,7 @@ export const useEditor = () => {
 export const EditorProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [htmlElements, setHtmlElements] = useState<htmlElement[]>([])
+  const [htmlElements, setHtmlElements] = useState<HtmlElement[]>([])
   const [verticalElements, setVerticalElements] = useState<VerticalElement[]>([
     { id: '0', dimensions: ["100%"], horizontalElements: [] },
   ]);

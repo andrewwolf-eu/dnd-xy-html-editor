@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDraggable } from "@dnd-kit/core";
-import { ConfigurationComponentProps, DraggableItemProps, DynamicHTMLContentProps, htmlElement, VerticalElement } from "DndXYHtmlEditor.types";
+import { ConfigurationComponentProps, DraggableItemProps, DynamicHTMLContentProps, HtmlElement, Translations, VerticalElement } from "DndXYHtmlEditor.types";
 import { styles } from "./Toolbar.styles";
 import { demoHtmlElements } from "./DemoHtmlElements";
 import { useEditor } from "../context/EditorContext";
@@ -41,9 +41,9 @@ const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ configu
     }));
 
     if (configuration.key && !configuration.selectedHorizontalElement) {
-      setHtmlElements((prevElements: htmlElement[]) => {
+      setHtmlElements((prevElements: HtmlElement[]) => {
         return [
-          ...prevElements.map(((prevElement: htmlElement) => {
+          ...prevElements.map(((prevElement: HtmlElement) => {
             if (prevElement.configuration.key !== configuration.key) {
               return prevElement
             } else {
@@ -100,9 +100,6 @@ const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ configu
         });
       });
     }
-  };
-
-  const handleSaveChanges = () => {
   };
 
   const renderInput = (key: string, value: any) => {
@@ -166,10 +163,11 @@ const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ configu
   return (
     <div>
       {/* <p>Configuration for: {configuration.key || 'unknown'}</p> */}
-      {Object.entries(configuration).map(([key, value]) =>
-        renderInput(key, value)
-      )}
-      <button onClick={handleSaveChanges}>Save Changes</button>
+      {Object.entries(configuration).map(([key, value]) => {
+        if (!(key === 'verticalElement' || key === 'selectedHorizontalElement')) {
+          return renderInput(key, value)
+        }
+      })}
     </div>
   );
 };
@@ -177,9 +175,9 @@ const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ configu
 const ConfigurationForSelectedElement: React.FC<{
   selectedElement: {
     id: string;
-    HtmlElement: htmlElement;
-  }, selectedHorizontalElement: string, verticalElements: VerticalElement[]
-}> = ({ selectedElement, selectedHorizontalElement, verticalElements }) => {
+    HtmlElement: HtmlElement;
+  }, selectedHorizontalElement: string, verticalElements: VerticalElement[], translations: Translations;
+}> = ({ selectedElement, selectedHorizontalElement, verticalElements, translations }) => {
   if (selectedElement.HtmlElement) {
     return <ConfigurationComponent configuration={selectedElement.HtmlElement.configuration} />
   }
@@ -196,23 +194,23 @@ const ConfigurationForSelectedElement: React.FC<{
     }
   }
 
-  return <div>Please select an element to configure</div>
+  return <div>{translations?.toolbar?.configuration?.info ?? 'Please select an element to configure'}</div>
 }
 
-const Toolbar = () => {
+const Toolbar: React.FC<{ translations: Translations }> = ({ translations }) => {
   const { selectedHorizontalElement, setSelectedHorizontalElement, verticalElements, htmlElements } = useEditor();
   const toolbarhtmlElements = htmlElements ? htmlElements : demoHtmlElements
   // State to manage active tab and selected element
   const [activeTab, setActiveTab] = useState<string>('elements');
   const selectedElementInitState = { id: '', HtmlElement: null }
-  const [selectedElement, setSelectedElement] = useState<{ id: string, HtmlElement: htmlElement }>(selectedElementInitState);
+  const [selectedElement, setSelectedElement] = useState<{ id: string, HtmlElement: HtmlElement }>(selectedElementInitState);
 
   // Function to handle tab switch
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
   };
 
-  const handleElementSelect = (id: string, HtmlElement: htmlElement) => {
+  const handleElementSelect = (id: string, HtmlElement: HtmlElement) => {
     setSelectedHorizontalElement(null)
     setSelectedElement({ id, HtmlElement });
   };
@@ -230,37 +228,40 @@ const Toolbar = () => {
       {/* Tab Navigation */}
       <div style={styles.tabContainer}>
         <button onClick={() => handleTabChange('elements')} style={activeTab === 'elements' ? styles.activeTab : styles.tab}>
-          Elements
+          {translations?.toolbar?.elements.tab ?? 'Elements'}
         </button>
         <button onClick={() => handleTabChange('configuration')} style={activeTab === 'configuration' ? styles.activeTab : styles.tab}>
-          Configuration
+          {translations?.toolbar?.configuration.tab ?? 'Configuration'}
         </button>
       </div>
 
       {/* Tab Content */}
       {activeTab === 'elements' && (
         <div style={styles.tabContent}>
-          {toolbarhtmlElements.map((item: htmlElement, index) => {
-            const id = `draggable-${index}`
-            return (
-              <DraggableItem
-                key={index}
-                id={id}
-                element={<DynamicHTMLContent htmlElement={item} />}
-                toolbarPreview={item.toolbarPreview ? item.toolbarPreview : <DynamicHTMLContent htmlElement={item} />}
-                selectedElementId={selectedElement.id}
-                onMouseDown={(e) => {
-                  e.stopPropagation();
-                  handleElementSelect(id, item);
-                }}
-              />
-            );
-          })}
+          <div>{translations?.toolbar?.elements?.info ?? 'Please select an element to configure'}</div>
+          <div style={{ display: 'grid', gridTemplateColumns: `repeat(2, 1fr)`, gap: '10px' }}>
+            {toolbarhtmlElements.map((item: HtmlElement, index) => {
+              const id = `draggable-${index}`;
+              return (
+                <DraggableItem
+                  key={index}
+                  id={id}
+                  element={<DynamicHTMLContent htmlElement={item} />}
+                  toolbarPreview={item.toolbarPreview ? item.toolbarPreview : <DynamicHTMLContent htmlElement={item} />}
+                  selectedElementId={selectedElement.id}
+                  onMouseDown={(e) => {
+                    e.stopPropagation();
+                    handleElementSelect(id, item);
+                  }}
+                />
+              );
+            })}
+          </div>
         </div>
       )}
       {activeTab === 'configuration' && (
         <div style={styles.tabContent}>
-          <ConfigurationForSelectedElement selectedElement={selectedElement} selectedHorizontalElement={selectedHorizontalElement} verticalElements={verticalElements} />
+          <ConfigurationForSelectedElement selectedElement={selectedElement} selectedHorizontalElement={selectedHorizontalElement} verticalElements={verticalElements} translations={translations} />
         </div>
       )}
     </div>

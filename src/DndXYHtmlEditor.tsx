@@ -25,7 +25,7 @@ import { DndXYHtmlEditorProps } from "DndXYHtmlEditor.types";
 import { styles } from "./DndXYHtmlEditor.styles";
 import { registerComponent } from "../src/components/componentRegistry";
 
-const AppContent = ({ verticalElementConfiguration = { enableDelete: true, enableDimensionSelector: true }, htmlElements, formattedHtmlOutput }: DndXYHtmlEditorProps) => {
+const AppContent = ({ verticalElementConfiguration = { enableMultipleContainer: true, enableDimensionSelector: true }, htmlElements, formattedHtmlOutput, translations }: DndXYHtmlEditorProps) => {
   const {
     setHtmlElements,
     verticalElements, setVerticalElements,
@@ -94,13 +94,13 @@ const AppContent = ({ verticalElementConfiguration = { enableDelete: true, enabl
         </div>
         <div style={styles.toolbarContainer}>
           <div style={styles.controls}>
-            {verticalElementConfiguration.enableDelete && <button onClick={addVerticalElement}>Add Vertical Element</button>}
-            <button onClick={() => handleSave(verticalElements)}>Save</button>
-            <button onClick={() => handleLoad(setVerticalElements)}>Load</button>
-            <button onClick={() => handleOutput(verticalElements, formattedHtmlOutput)}>HTML Output</button>
+            {verticalElementConfiguration.enableMultipleContainer && <button onClick={addVerticalElement}>{translations?.actionButtons?.addVerticalElement ?? 'Add Vertical Element'}</button>}
+            <button onClick={() => handleSave(verticalElements)}>{translations?.actionButtons?.save ?? 'Save'}</button>
+            <button onClick={() => handleLoad(setVerticalElements)}>{translations?.actionButtons?.load ?? 'Load'}</button>
+            <button onClick={() => handleOutput(verticalElements, formattedHtmlOutput)}>{translations?.actionButtons?.htmlOutput ?? 'HTML Output'}</button>
           </div>
-          <EmailModal />
-          <Toolbar />
+          <EmailModal translations={translations} />
+          <Toolbar translations={translations} />
         </div>
         <DragOverlay>
           {activeId && activeElement ? (

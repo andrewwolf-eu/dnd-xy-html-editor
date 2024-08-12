@@ -1,7 +1,8 @@
 export interface DndXYHtmlEditorProps
   extends VerticalElementConfigurationProps {
-  htmlElements: htmlElement[];
+  htmlElements: HtmlElement[];
   formattedHtmlOutput?: (htmlOutput: string) => void;
+  translations?: Translations;
 }
 
 export interface EditorAreaProps
@@ -9,8 +10,8 @@ export interface EditorAreaProps
     SelectionProps {}
 
 export interface EditorContextType {
-  htmlElements: htmlElement[];
-  setHtmlElements: React.Dispatch<React.SetStateAction<htmlElement[]>>;
+  htmlElements: HtmlElement[];
+  setHtmlElements: React.Dispatch<React.SetStateAction<HtmlElement[]>>;
   verticalElements: VerticalElement[];
   setVerticalElements: React.Dispatch<React.SetStateAction<VerticalElement[]>>;
   selectedVerticalElement: string;
@@ -36,14 +37,34 @@ export interface htmlElementConfiguration {
   [key: string]: any;
 }
 
-export interface htmlElement {
+export interface HtmlElement {
   element: htmlElementFunction;
   toolbarPreview?: JSX.Element;
   configuration: htmlElementConfiguration;
 }
 
 export interface DynamicHTMLContentProps {
-  htmlElement: htmlElement;
+  htmlElement: HtmlElement;
+}
+
+export interface Translations {
+  toolbar?: {
+    elements?: {
+      tab?: string
+      info?: string;
+    };
+    configuration?: {
+      tab?: string;
+      info?: string;
+    };
+  };
+  actionButtons?: {
+    addVerticalElement?: string;
+    htmlOutput?: string;
+    sendEmail?: string;
+    save?: string;
+    load?: string;
+  };
 }
 
 export interface ConfigurationComponentProps {
@@ -66,7 +87,7 @@ export interface DraggableItemProps {
 
 interface VerticalElementConfigurationProps {
   verticalElementConfiguration?: {
-    enableDelete?: boolean;
+    enableMultipleContainer?: boolean;
     enableDimensionSelector?: boolean;
   };
 }

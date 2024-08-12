@@ -1,7 +1,7 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { DndXYHtmlEditor } from "../src/DndXYHtmlEditor";
-import { DndXYHtmlEditorProps, htmlElement } from "DndXYHtmlEditor.types";
+import { DndXYHtmlEditorProps, HtmlElement } from "DndXYHtmlEditor.types";
 import { DivElement, ImageElement, TextElement } from "../src/components/DemoHtmlElements";
 
 const meta = {
@@ -16,7 +16,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const htmlElements: htmlElement[] = [
+const htmlElements: HtmlElement[] = [
   {
     element: DivElement,
     toolbarPreview: <p>{'DivElement'}</p>,
@@ -56,11 +56,30 @@ export const Demo: Story = {
   args: {
     htmlElements,
     verticalElementConfiguration: {
-      enableDelete: true,
+      enableMultipleContainer: true,
       enableDimensionSelector: true
     },
     /* formattedHtmlOutput: (htmlOutput: string) => {
       console.log({ htmlOutput })
     } */
+    translations: {
+      toolbar: {
+        elements: {
+          tab: 'Elements',
+          info: 'Add content to the newsletter, or you can use the one in the template. Drag the element to the left, and then you can edit it.',
+        },
+        configuration: {
+          tab: 'Configuration',
+          info: 'Please select an element to configure',
+        },
+      },
+      actionButtons: {
+        addVerticalElement: 'Add Vertical Element',
+        htmlOutput: 'HTML Output',
+        sendEmail: 'Send e-mail',
+        save: 'Save',
+        load: 'Load',
+      },
+    },
   },
 };
