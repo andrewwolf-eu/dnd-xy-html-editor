@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDraggable } from "@dnd-kit/core";
-import { ConfigurationComponentProps, DraggableItemProps, DynamicHTMLContentProps, HtmlElement, Translations, VerticalElement } from "DndXYHtmlEditor.types";
+import {
+  ConfigurationComponentProps,
+  DraggableItemProps,
+  DynamicHTMLContentProps,
+  HtmlElement,
+  Translations,
+  VerticalElement,
+  ToolbarConfigurationProps
+} from "DndXYHtmlEditor.types";
 import { styles } from "./Toolbar.styles";
 import { demoHtmlElements } from "./DemoHtmlElements";
 import { useEditor } from "../context/EditorContext";
@@ -197,7 +205,7 @@ const ConfigurationForSelectedElement: React.FC<{
   return <div>{translations?.toolbar?.configuration?.info ?? 'Please select an element to configure'}</div>
 }
 
-const Toolbar: React.FC<{ translations: Translations }> = ({ translations }) => {
+const Toolbar: React.FC<ToolbarConfigurationProps & {translations: Translations}> = ({ toolbarConfiguration, translations }) => {
   const { selectedHorizontalElement, setSelectedHorizontalElement, verticalElements, htmlElements } = useEditor();
   const toolbarhtmlElements = htmlElements ? htmlElements : demoHtmlElements
   // State to manage active tab and selected element
@@ -226,7 +234,7 @@ const Toolbar: React.FC<{ translations: Translations }> = ({ translations }) => 
   return (
     <div style={styles.toolbar}>
       {/* Tab Navigation */}
-      <div style={styles.tabContainer}>
+      <div>
         <button onClick={() => handleTabChange('elements')} style={activeTab === 'elements' ? styles.activeTab : styles.tab}>
           {translations?.toolbar?.elements.tab ?? 'Elements'}
         </button>
@@ -237,9 +245,9 @@ const Toolbar: React.FC<{ translations: Translations }> = ({ translations }) => 
 
       {/* Tab Content */}
       {activeTab === 'elements' && (
-        <div style={styles.tabContent}>
-          <div>{translations?.toolbar?.elements?.info ?? 'Please select an element to configure'}</div>
-          <div style={{ display: 'grid', gridTemplateColumns: `repeat(2, 1fr)`, gap: '10px' }}>
+        <div>
+          <div>{translations?.toolbar?.elements?.info ?? 'Add content to the newsletter, or you can use the one in the template. Drag the element to the left, and then you can edit it.'}</div>
+          <div style={{ display: 'grid', gridTemplateColumns: `repeat(${toolbarConfiguration.columnsInElements}, 1fr)`, gap: '10px' }}>
             {toolbarhtmlElements.map((item: HtmlElement, index) => {
               const id = `draggable-${index}`;
               return (
@@ -260,7 +268,7 @@ const Toolbar: React.FC<{ translations: Translations }> = ({ translations }) => 
         </div>
       )}
       {activeTab === 'configuration' && (
-        <div style={styles.tabContent}>
+        <div>
           <ConfigurationForSelectedElement selectedElement={selectedElement} selectedHorizontalElement={selectedHorizontalElement} verticalElements={verticalElements} translations={translations} />
         </div>
       )}

@@ -7,17 +7,16 @@ export const styles: { [key: string]: CSSProperties } = {
     height: '100%',
   },
   editorAreaContainer: {
-    flexGrow: 1,
-    // padding: '20px',
-    overflowY: 'auto',
+  },
+  resizer: {
+    width: '5px',
+    backgroundColor: 'gray',
+    cursor: 'col-resize',
+    position: 'relative',
+    zIndex: 1,
   },
   toolbarContainer: {
-    width: '300px',
-    // padding: '20px',
-    borderLeft: '1px solid #ddd',
-    display: 'flex',
-    flexDirection: 'column',
-    // justifyContent: 'space-between',
+    backgroundColor: '#e0e0e0',
   },
   controls: {
     // marginTop: '20px',

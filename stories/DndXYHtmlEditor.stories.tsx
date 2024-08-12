@@ -57,7 +57,11 @@ export const Demo: Story = {
     htmlElements,
     verticalElementConfiguration: {
       enableMultipleContainer: true,
-      enableDimensionSelector: true
+      enableDimensionSelector: true,
+      defaultContainerWidthInPercentage: 70,
+    },
+    toolbarConfiguration: {
+      columnsInElements: 2,
     },
     /* formattedHtmlOutput: (htmlOutput: string) => {
       console.log({ htmlOutput })

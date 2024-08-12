@@ -1,5 +1,5 @@
 export interface DndXYHtmlEditorProps
-  extends VerticalElementConfigurationProps {
+  extends VerticalElementConfigurationProps, ToolbarConfigurationProps {
   htmlElements: HtmlElement[];
   formattedHtmlOutput?: (htmlOutput: string) => void;
   translations?: Translations;
@@ -50,7 +50,7 @@ export interface DynamicHTMLContentProps {
 export interface Translations {
   toolbar?: {
     elements?: {
-      tab?: string
+      tab?: string;
       info?: string;
     };
     configuration?: {
@@ -89,6 +89,13 @@ interface VerticalElementConfigurationProps {
   verticalElementConfiguration?: {
     enableMultipleContainer?: boolean;
     enableDimensionSelector?: boolean;
+    defaultContainerWidthInPercentage?: number;
+  };
+}
+
+export interface ToolbarConfigurationProps {
+  toolbarConfiguration?: {
+    columnsInElements?: number;
   };
 }
 

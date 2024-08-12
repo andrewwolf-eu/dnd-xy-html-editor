@@ -25,7 +25,19 @@ import { DndXYHtmlEditorProps } from "DndXYHtmlEditor.types";
 import { styles } from "./DndXYHtmlEditor.styles";
 import { registerComponent } from "../src/components/componentRegistry";
 
-const AppContent = ({ verticalElementConfiguration = { enableMultipleContainer: true, enableDimensionSelector: true }, htmlElements, formattedHtmlOutput, translations }: DndXYHtmlEditorProps) => {
+const AppContent = ({
+  verticalElementConfiguration: {
+    enableMultipleContainer = false,
+    enableDimensionSelector = false,
+    defaultContainerWidthInPercentage = 70,
+  } = {},
+  toolbarConfiguration: {
+    columnsInElements = 2,
+  } = {},
+  htmlElements,
+  formattedHtmlOutput,
+  translations,
+}: DndXYHtmlEditorProps) => {
   const {
     setHtmlElements,
     verticalElements, setVerticalElements,
@@ -36,6 +48,7 @@ const AppContent = ({ verticalElementConfiguration = { enableMultipleContainer: 
   const [activeId, setActiveId] = useState<string | null>(null);
   const [activeElement, setActiveElement] = useState<JSX.Element | null>(null);
   const [containerHeight, setContainerHeight] = useState<number>(window.innerHeight);
+  const [editorWidthPercent, setEditorWidthPercent] = useState(defaultContainerWidthInPercentage);
 
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
@@ -60,6 +73,22 @@ const AppContent = ({ verticalElementConfiguration = { enableMultipleContainer: 
     setSelectedVerticalElement(null);
   };
 
+  const handleMouseMove = (e) => {
+    const containerWidth = document.body.clientWidth;
+    const newWidth = (e.clientX / containerWidth) * 100;
+    setEditorWidthPercent(newWidth);
+  };
+
+  const handleMouseUp = () => {
+    document.removeEventListener('mousemove', handleMouseMove);
+    document.removeEventListener('mouseup', handleMouseUp);
+  };
+
+  const handleMouseDown = () => {
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  };
+
   return (
     <DndContext
       sensors={sensors}
@@ -77,13 +106,13 @@ const AppContent = ({ verticalElementConfiguration = { enableMultipleContainer: 
       }
     >
       <div style={styles.app}>
-        <div style={{ ...styles.editorAreaContainer, height: containerHeight }}>
+        <div style={{ ...styles.editorAreaContainer, height: containerHeight, width: `${editorWidthPercent}%`, }}>
           <SortableContext
             items={verticalElements.map((verticalElement) => `editor-${verticalElement.id}`)}
           >
             {verticalElements.map((verticalElement) => (
               <SortableEditorArea
-                verticalElementConfiguration={verticalElementConfiguration}
+                verticalElementConfiguration={{ enableDimensionSelector, enableMultipleContainer }}
                 key={verticalElement.id}
                 verticalElement={verticalElement}
                 onVerticalElementClick={onVerticalElementClick}
@@ -92,15 +121,19 @@ const AppContent = ({ verticalElementConfiguration = { enableMultipleContainer: 
             ))}
           </SortableContext>
         </div>
-        <div style={styles.toolbarContainer}>
+        <div
+          style={styles.resizer}
+          onMouseDown={handleMouseDown}
+        />
+        <div style={{ ...styles.toolbarContainer, flexBasis: `${100 - editorWidthPercent}%`, }}>
           <div style={styles.controls}>
-            {verticalElementConfiguration.enableMultipleContainer && <button onClick={addVerticalElement}>{translations?.actionButtons?.addVerticalElement ?? 'Add Vertical Element'}</button>}
+            {enableMultipleContainer && <button onClick={addVerticalElement}>{translations?.actionButtons?.addVerticalElement ?? 'Add Vertical Element'}</button>}
             <button onClick={() => handleSave(verticalElements)}>{translations?.actionButtons?.save ?? 'Save'}</button>
             <button onClick={() => handleLoad(setVerticalElements)}>{translations?.actionButtons?.load ?? 'Load'}</button>
             <button onClick={() => handleOutput(verticalElements, formattedHtmlOutput)}>{translations?.actionButtons?.htmlOutput ?? 'HTML Output'}</button>
           </div>
           <EmailModal translations={translations} />
-          <Toolbar translations={translations} />
+          <Toolbar toolbarConfiguration={{ columnsInElements }} translations={translations}/>
         </div>
         <DragOverlay>
           {activeId && activeElement ? (
