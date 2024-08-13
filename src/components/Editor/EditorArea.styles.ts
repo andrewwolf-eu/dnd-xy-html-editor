@@ -22,7 +22,7 @@ export const styles: { [key: string]: CSSProperties } = {
     border: "2px dashed #ccc",
     minHeight: '500px',
     padding: "10px 10px 500px 10px",
-    backgroundColor: "#fff",
+    backgroundColor: "gray",
     position: "relative",
   },
   flexContainer: {

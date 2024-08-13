@@ -1,6 +1,6 @@
 import React from "react";
-import { dimensionMapping, getDimensionValue, getDimensionKeyValue } from "../utils/dimensionUtils";
-import { useEditor } from "../context/EditorContext";
+import { dimensionMapping, getDimensionValue, getDimensionKeyValue } from "../../utils/dimensionUtils";
+import { useEditor } from "../../context/EditorContext";
 
 export const handleDimensionChange = (
   event: React.ChangeEvent<HTMLSelectElement>,

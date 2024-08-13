@@ -7,6 +7,7 @@ export const styles: { [key: string]: CSSProperties } = {
     height: '100%',
   },
   editorAreaContainer: {
+    overflow: 'auto'
   },
   resizer: {
     width: '5px',

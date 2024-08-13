@@ -3,10 +3,10 @@ import { useDroppable } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
 import { IconButton } from '@mui/material';
 import { Delete } from '@mui/icons-material';
-import { useEditor } from "../context/EditorContext";
+import { useEditor } from "../../context/EditorContext";
 import SortableItem from "./SortableItem";
 import DimensionSelector from "./DimensionSelector";
-import { EditorAreaProps } from "../DndXYHtmlEditor.types";
+import { EditorAreaProps } from "../../DndXYHtmlEditor.types";
 import { styles } from "./EditorArea.styles";
 
 const EditorArea = ({

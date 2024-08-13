@@ -2,8 +2,8 @@ import React from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import EditorArea from "./EditorArea";
 import { CSS } from "@dnd-kit/utilities";
-import { EditorAreaProps } from "../DndXYHtmlEditor.types";
-import { useEditor } from "../context/EditorContext";
+import { EditorAreaProps } from "../../DndXYHtmlEditor.types";
+import { useEditor } from "../../context/EditorContext";
 
 const SortableEditorArea = ({ verticalElementConfiguration, ...props }: EditorAreaProps) => {
   const { selectedVerticalElement } = useEditor();

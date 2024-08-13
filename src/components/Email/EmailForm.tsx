@@ -2,8 +2,8 @@ import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { Modal, Box, TextField, Button } from '@mui/material';
 import { styles } from "./EmailForm.styles";
 import emailjs from 'emailjs-com';
-import { useEditor } from '../context/EditorContext';
-import { handleOutput } from '../utils/editorHandlers';
+import { useEditor } from '../../context/EditorContext';
+import { handleOutput } from '../../utils/editorHandlers';
 
 interface EmailJSConfig {
     service_id: string;

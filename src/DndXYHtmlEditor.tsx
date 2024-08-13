@@ -10,8 +10,8 @@ import {
   MeasuringStrategy,
 } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
-import SortableEditorArea from "./components/SortableEditorArea";
-import Toolbar from "./components/Toolbar";
+import SortableEditorArea from "./components/Editor/SortableEditorArea";
+import Toolbar from "./components/Toolbar/Toolbar";
 import {
   handleDragEnd,
   handleDragStart,
@@ -19,7 +19,7 @@ import {
   handleLoad,
   handleOutput,
 } from "./utils/editorHandlers";
-import EmailModal from "./components/EmailModal";
+import EmailModal from "./components/Email/EmailModal";
 import { EditorProvider, useEditor } from "./context/EditorContext";
 import { DndXYHtmlEditorProps } from "DndXYHtmlEditor.types";
 import { styles } from "./DndXYHtmlEditor.styles";
