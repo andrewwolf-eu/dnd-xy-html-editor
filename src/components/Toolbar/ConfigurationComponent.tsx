@@ -4,6 +4,7 @@ import {
   HtmlElement,
   VerticalElement,
 } from "DndXYHtmlEditor.types";
+import AutoExpandTextarea from "./AutoExpandTextarea";
 import { styles } from "./Toolbar.styles";
 import { useEditor } from "../../context/EditorContext";
 import { parseIfJsonObject } from "../../utils/dimensionUtils";
@@ -153,7 +154,7 @@ export const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ 
 
   const renderDropdown = (key: string, options: any[]) => {
     return (
-      <div key={key}>
+      <div key={key} style={styles.renderInput}>
         <label>{key}:</label>
         <select name={key} value={formState[key]} onChange={handleChange}>
           {options.map((option, index) => (
@@ -172,8 +173,7 @@ export const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ 
       return (
         <div key={key} style={styles.renderInput}>
           <label>{key}:</label>
-          <input
-            type={typeof value === 'number' ? 'number' : 'text'}
+          <AutoExpandTextarea
             name={key}
             value={formState[key]}
             onChange={handleChange}
