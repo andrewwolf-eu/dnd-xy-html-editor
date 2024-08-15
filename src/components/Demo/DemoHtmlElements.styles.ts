@@ -8,8 +8,8 @@ export const styles: { [key: string]: CSSProperties } = {
     justifyContent: "center",
     textAlign: "center",
     backgroundColor: "white",
-    width: "100%",
-    height: "100%",
+    width: "200px",
+    height: "100px",
   },
   paragraph: {
     margin: 0,

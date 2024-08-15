@@ -6,8 +6,6 @@ import {
   TouchSensor,
   useSensor,
   useSensors,
-  rectIntersection,
-  MeasuringStrategy,
 } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
 import SortableEditorArea from "./components/Editor/SortableEditorArea";
@@ -24,6 +22,14 @@ import { EditorProvider, useEditor } from "./context/EditorContext";
 import { DndXYHtmlEditorProps } from "DndXYHtmlEditor.types";
 import { styles } from "./DndXYHtmlEditor.styles";
 import { registerComponent } from "../src/components/componentRegistry";
+
+export const DndXYHtmlEditor = (props: DndXYHtmlEditorProps) => {
+  return (
+    <EditorProvider>
+      <AppContent {...props} />
+    </EditorProvider>
+  );
+};
 
 const AppContent = ({
   verticalElementConfiguration: {
@@ -92,12 +98,6 @@ const AppContent = ({
   return (
     <DndContext
       sensors={sensors}
-      collisionDetection={rectIntersection}
-      measuring={{
-        droppable: {
-          strategy: MeasuringStrategy.Always,
-        },
-      }}
       onDragStart={(event) =>
         handleDragStart(event, setActiveId, setActiveElement)
       }
@@ -133,7 +133,7 @@ const AppContent = ({
             <button onClick={() => handleOutput(verticalElements, formattedHtmlOutput)}>{translations?.actionButtons?.htmlOutput ?? 'HTML Output'}</button>
           </div>
           <EmailModal translations={translations} />
-          <Toolbar toolbarConfiguration={{ columnsInElements }} translations={translations}/>
+          <Toolbar toolbarConfiguration={{ columnsInElements }} translations={translations} />
         </div>
         <DragOverlay>
           {activeId && activeElement ? (
@@ -144,13 +144,5 @@ const AppContent = ({
         </DragOverlay>
       </div>
     </DndContext>
-  );
-};
-
-export const DndXYHtmlEditor = (props: DndXYHtmlEditorProps) => {
-  return (
-    <EditorProvider>
-      <AppContent {...props} />
-    </EditorProvider>
   );
 };

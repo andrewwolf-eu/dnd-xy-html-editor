@@ -157,7 +157,7 @@ export const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ 
       <div key={key} style={styles.renderInput}>
         <label>{key}:</label>
         <select name={key} value={formState[key]} onChange={handleChange}>
-          {options.map((option, index) => (
+          {options.sort().map((option, index) => (
             <option key={index} value={option}>
               {option}
             </option>
