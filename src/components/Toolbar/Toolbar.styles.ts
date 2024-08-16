@@ -2,7 +2,7 @@ import { CSSProperties } from "react";
 
 export const styles: { [key: string]: CSSProperties } = {
   toolbar: {
-    backgroundColor: "#f9f9f9",
+    backgroundColor: "white",
     width: "100%",
   },
   tabContainer: {

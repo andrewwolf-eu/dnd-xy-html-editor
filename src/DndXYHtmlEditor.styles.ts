@@ -1,30 +1,34 @@
-import { CSSProperties } from 'react';
+import { CSSProperties } from "react";
 
 export const styles: { [key: string]: CSSProperties } = {
   app: {
-    display: 'flex',
-    width: '100%',
-    height: '100%',
+    display: "flex",
+    width: "100%",
+    height: "100%",
   },
   editorAreaContainer: {
-    overflow: 'auto'
+    overflow: "auto",
   },
   resizer: {
-    width: '5px',
-    backgroundColor: 'gray',
-    cursor: 'col-resize',
-    position: 'relative',
+    width: "5px",
+    backgroundColor: "gray",
+    cursor: "col-resize",
+    position: "relative",
     zIndex: 1,
   },
   toolbarContainer: {
-    backgroundColor: '#e0e0e0',
+    backgroundColor: "#e0e0e0",
   },
   controls: {
-    // marginTop: '20px',
+    display: "flex",
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: '10px',
+    margin: "10px",
   },
   dragOverlay: {
-    position: 'absolute',
-    pointerEvents: 'none',
+    position: "absolute",
+    pointerEvents: "none",
     zIndex: 1000,
     opacity: 0.7,
   },

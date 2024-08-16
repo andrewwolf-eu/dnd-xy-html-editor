@@ -131,8 +131,8 @@ const AppContent = ({
             <button onClick={() => handleSave(verticalElements)}>{translations?.actionButtons?.save ?? 'Save'}</button>
             <button onClick={() => handleLoad(setVerticalElements)}>{translations?.actionButtons?.load ?? 'Load'}</button>
             <button onClick={() => handleOutput(verticalElements, formattedHtmlOutput)}>{translations?.actionButtons?.htmlOutput ?? 'HTML Output'}</button>
+            <EmailModal translations={translations} />
           </div>
-          <EmailModal translations={translations} />
           <Toolbar toolbarConfiguration={{ columnsInElements }} translations={translations} />
         </div>
         <DragOverlay>

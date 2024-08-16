@@ -20,24 +20,13 @@ export const styles: { [key: string]: CSSProperties } = {
   },
   editorArea: {
     border: "2px dashed #ccc",
-    minHeight: '500px',
     padding: "10px 10px 500px 10px",
     backgroundColor: "gray",
     position: "relative",
   },
   flexContainer: {
     display: "flex",
-    flexDirection: "column",
-    gap: "10px",
-  },
-  flexRow: {
-    display: "flex",
-    width: "100%",
-    gap: "10px",
-  },
-  flexVerticalContainer: {
-    position: "relative",
-    flexGrow: 1,
+    flexWrap: "wrap",
   },
   flexVerticalContainerSelected: {
     border: "2px solid blue",

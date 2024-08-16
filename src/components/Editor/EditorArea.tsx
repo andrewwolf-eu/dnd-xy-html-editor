@@ -1,6 +1,6 @@
 import React from "react";
 import { useDroppable } from "@dnd-kit/core";
-import { SortableContext } from "@dnd-kit/sortable";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { IconButton } from '@mui/material';
 import { Delete } from '@mui/icons-material';
 import { useEditor } from "../../context/EditorContext";
@@ -15,13 +15,14 @@ const EditorArea = ({
   onVerticalElementClick,
   onHorizontalElementClick,
 }: EditorAreaProps) => {
-  const { id: verticalElementId, horizontalElements, dimensions } = verticalElement
+  const { id: verticalElementId, dimensions } = verticalElement;
   const {
     selectedVerticalElement,
     selectedHorizontalElement,
     removeHorizontalElementFromVerticalElement,
-    removeVerticalElement
+    removeVerticalElement,
   } = useEditor();
+
   const { setNodeRef } = useDroppable({
     id: `editor-area-${verticalElementId}`,
   });
@@ -31,10 +32,23 @@ const EditorArea = ({
     removeHorizontalElementFromVerticalElement(verticalElementId, element);
   };
 
-  const rows: JSX.Element[][] = [];
-  for (let i = 0; i < horizontalElements.length; i += dimensions.length) {
-    rows.push(horizontalElements.slice(i, i + dimensions.length));
-  }
+  const handleItemMouseDown = (itemId: string, event: React.MouseEvent) => {
+    let isDragging = false;
+
+    const handleMouseMove = () => {
+      isDragging = true;
+      document.removeEventListener('mousemove', handleMouseMove);
+    };
+
+    const handleMouseUp = () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      onHorizontalElementClick(itemId);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  };
 
   const isSelectedVerticalElement = selectedVerticalElement === verticalElementId;
 
@@ -46,62 +60,51 @@ const EditorArea = ({
       }}
       onMouseDown={() => onVerticalElementClick(verticalElementId)}
     >
-      {verticalElementConfiguration.enableDimensionSelector && <DimensionSelector
-        verticalElementId={verticalElementId}
-      />}
-      {verticalElementConfiguration.enableMultipleContainer && <IconButton
-        onMouseDown={() => removeVerticalElement(verticalElementId)}
-      >
-        <Delete />
-      </IconButton>}
+      {verticalElementConfiguration.enableDimensionSelector && (
+        <DimensionSelector verticalElementId={verticalElementId} />
+      )}
+      {verticalElementConfiguration.enableMultipleContainer && (
+        <IconButton
+          onMouseDown={() => removeVerticalElement(verticalElementId)}
+        >
+          <Delete />
+        </IconButton>
+      )}
       <div ref={setNodeRef} style={{ ...styles.editorArea, ...styles.flexContainer }}>
-        {rows.map((row, rowIndex) => (
-          <div key={rowIndex} style={styles.flexRow}>
-            <SortableContext
-              items={row.map(
-                (element, index) =>
-                  element.key || `element-${rowIndex}-${index}`
-              )}
-            >
-              {row.map((element, index) => {
-                const itemId = element.key || `element-${rowIndex}-${index}`;
-                const isSelectedItem = selectedHorizontalElement === itemId;
-                return (
-                  <div
-                    key={itemId}
-                    style={{
-                      ...styles.flexVerticalContainer,
-                      ...(isSelectedItem ? styles.flexVerticalContainerSelected : {}),
-                    }}
-                    onMouseDown={(e) => {
-                      e.stopPropagation();
-                      onHorizontalElementClick(itemId.toString());
-                    }}
-                  >
-                    <SortableItem id={itemId}>
-                      <div
-                        style={{
-                          ...styles.flexVertical,
-                          flexBasis: dimensions[index % dimensions.length],
-                        }}
-                      >
-                        <div style={styles.editorElement}>
-                          {element}
-                          <IconButton
-                            onMouseDown={(e) => handleRemoveItem(element, e)}
-                            style={styles.deleteButton}
-                          >
-                            <Delete />
-                          </IconButton>
-                        </div>
-                      </div>
-                    </SortableItem>
+        <SortableContext
+          items={verticalElement.horizontalElements.map(
+            (element, index) =>
+              element.key || `element-${verticalElement.id}-${index}`
+          )}
+          strategy={verticalListSortingStrategy}
+        >
+          {verticalElement.horizontalElements.map((element, index) => {
+            const itemId = element.key || `element-${verticalElement.id}-${index}`;
+            const isSelectedItem = selectedHorizontalElement === itemId;
+            return (
+              <SortableItem id={itemId} itemWidth={dimensions[index % dimensions.length]}>
+                <div
+                  key={itemId}
+                  style={{
+                    ...styles.flexVertical,
+                    ...(isSelectedItem ? styles.flexVerticalContainerSelected : {}),
+                  }}
+                  onMouseDown={(e) => handleItemMouseDown(itemId.toString(), e)}
+                >
+                  <div style={styles.editorElement}>
+                    {element}
+                    <IconButton
+                      onMouseDown={(e) => handleRemoveItem(element, e)}
+                      style={styles.deleteButton}
+                    >
+                      <Delete />
+                    </IconButton>
                   </div>
-                );
-              })}
-            </SortableContext>
-          </div>
-        ))}
+                </div>
+              </SortableItem>
+            );
+          })}
+        </SortableContext>
       </div>
     </div>
   );

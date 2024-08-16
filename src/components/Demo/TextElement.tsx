@@ -67,7 +67,7 @@ export const TextElement = (props: htmlElementConfiguration) => {
     color: props?.color?.value,
     fontWeight: props?.fontWeight?.value,
     fontStyle: props?.fontStyle?.value,
-    textMargin: props?.textMargin?.value,
+    margin: props?.textMargin?.value,
   };
 
   return <div style={{ width: '100%' }}>

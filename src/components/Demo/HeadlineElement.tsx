@@ -16,6 +16,10 @@ export const generalHeadlineElementOptions = {
     type: 'dropdown',
     options: ['left', 'center', 'right', 'justify']
   },
+  margin: {
+    value: '30px',
+    options: ['10px', '20px', '30px']
+  },
   color: {
     value: 'black',
     type: 'dropdown',
@@ -31,6 +35,7 @@ export const HeadlineElement = (props: htmlElementConfiguration) => {
   let headlineStyle = {
     fontFamily: props?.fontFamily?.value,
     textAlign: props?.textAlign?.value,
+    margin: props?.margin?.value,
     color: props?.color?.value,
     fontStyle: props?.fontStyle?.value,
   };

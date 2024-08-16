@@ -4,10 +4,11 @@ import { CSS } from "@dnd-kit/utilities";
 
 interface SortableItemProps {
   id: any;
+  itemWidth: string;
   children: React.ReactNode;
 }
 
-const SortableItem: React.FC<SortableItemProps> = ({ id, children }) => {
+const SortableItem: React.FC<SortableItemProps> = ({ id, itemWidth, children, }) => {
   const {
     attributes,
     listeners,
@@ -20,8 +21,10 @@ const SortableItem: React.FC<SortableItemProps> = ({ id, children }) => {
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+    flexBasis: `calc(${itemWidth} - 8px)`,
     opacity: isDragging ? 0.5 : 1,
     zIndex: isDragging ? 1000 : "auto", // Ensure dragging item is on top
+    cursor: "grab",
   };
 
   return (
@@ -30,7 +33,6 @@ const SortableItem: React.FC<SortableItemProps> = ({ id, children }) => {
       style={style}
       {...attributes}
       {...listeners}
-      className="sortable-item"
     >
       {children}
     </div>
