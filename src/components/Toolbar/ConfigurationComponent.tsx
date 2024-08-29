@@ -17,7 +17,7 @@ export const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ 
     const initialState: { [key: string]: any } = {};
 
     for (const key in configuration) {
-      if (configuration.hasOwnProperty(key)) {
+      if (configuration.hasOwnProperty(key) && key !== 'customAction') {
         const value = configuration[key];
         if (typeof value === 'object' && value.hasOwnProperty('value') && value.hasOwnProperty('options')) {
           initialState[key] = value.value; // Use the `value` property for formState
@@ -215,10 +215,22 @@ export const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ 
     }
   };
 
+  const updateKeyValue = ({key, value}: {key: string, value: string}) => {
+    setFormState((prevState) => ({
+      ...prevState,
+      [key]: value,
+    }));
+
+    handleChange({ name: key, value: value })
+  };
+
   return (
     <div>
       {/* Render all form elements based on the new configuration structure */}
       {Object.entries(configuration).map(([key, value]) => {
+        if (key === 'customAction') {
+          return configuration[key](updateKeyValue);
+        }
         if (!(key === 'verticalElement' || key === 'selectedHorizontalElement')) {
           return renderInput(key, value);
         }

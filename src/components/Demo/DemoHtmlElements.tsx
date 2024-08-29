@@ -1,6 +1,6 @@
 import React from "react"
 import { HtmlElement } from "DndXYHtmlEditor.types"
-import { BusinessCenterOutlined } from "@mui/icons-material"
+import { BusinessCenterOutlined, SystemUpdateAlt } from "@mui/icons-material"
 import { PictureAndTextSbSElement, generalPictureAndTextSbSElementOptions } from "./PictureAndTextSbSElement";
 import { PictureAndTextUeOElement, generalPictureAndTextUeOElementOptions } from "./PictureAndTextUeOElement";
 import { ImageElement, generalImageElementOptions } from "./ImageElement";
@@ -20,6 +20,12 @@ export const demoHtmlElements: HtmlElement[] = [
     configuration: {
       elementIdentifier: 'PictureAndTextSbSElement',
       key: 'picture-and-text-side-by-side-element',
+      customAction: (updateKeyValue: ({ key, value }: { key: string, value: string }) => void) => {
+        return <div style={{ display: 'flex', alignItems: 'center' }} onClick={() => updateKeyValue({ key: 'src', value: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1b/36/37/32/caption.jpg?w=1100&h=1100&s=1' })}>
+          <SystemUpdateAlt />
+          <span>Update Image with some external image store</span>
+        </div>
+      },
       src: 'https://media.gq-magazine.co.uk/photos/5daf29d843196300087c8a24/16:9/w_2560%2Cc_limit/20191022-Budapest-01.jpg',
       alt: 'Configured Image Element',
       width: '500',
