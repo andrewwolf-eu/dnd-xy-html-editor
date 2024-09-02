@@ -1,78 +1,70 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
-import { Modal, Box, TextField, Button } from '@mui/material';
+import { Modal, Box, TextField, Button, Checkbox, FormControlLabel } from '@mui/material';
 import { styles } from "./EmailForm.styles";
-import emailjs from 'emailjs-com';
 import { useEditor } from '../../context/EditorContext';
 import { handleOutput } from '../../utils/editorHandlers';
-
-interface EmailJSConfig {
-    service_id: string;
-    template_id: string;
-    public_key: string;
-}
-
-interface ToSend {
-    from_name: string;
-    to_name: string;
-    reply_to: string;
-    myHTML: string;
-}
-
-interface EmailFormProps {
-    open: boolean;
-    onClose: () => void;
-}
+import axios from 'axios';
+import { EmailFormProps, SMTPConfig, ToSend } from './types';
+import { EmailAttachment } from 'smtp-server/types';
 
 const EmailForm: React.FC<EmailFormProps> = ({ open, onClose }) => {
-    const {
-        verticalElements
-    } = useEditor();
+    const { verticalElements } = useEditor();
 
-    const [emailJSConfig, setEmailJSConfig] = useState<EmailJSConfig>({
-        service_id: '',
-        template_id: '',
-        public_key: '',
+    const [smtpConfig, setSmtpConfig] = useState<SMTPConfig>({
+        host: process.env.REACT_APP_SMTP_HOST || '',
+        username: process.env.REACT_APP_SMTP_USERNAME || '',
+        password: process.env.REACT_APP_SMTP_PASSWORD || '',
+        port: process.env.REACT_APP_SMTP_PORT || '',
+        secure: process.env.REACT_APP_SMTP_SECURE === 'true',
+        from: process.env.REACT_APP_SMTP_FROM || ''
     });
 
     const [toSend, setToSend] = useState<ToSend>({
-        from_name: 'farkas.andras.jp@gmail.com',
-        to_name: 'farkas.andras.uk@gmail.com',
-        reply_to: 'farkas.andras.uk@gmail.com, farkas.andras.usa@gmail.com',
-        myHTML: ''
+        recipient: '',
+        title: '',
+        body: '',
+        cidBasedImageEmbedding: true,
     });
 
     const handleConfigChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setEmailJSConfig({ ...emailJSConfig, [name]: value });
+        const { name, value, type, checked } = e.target;
+        setSmtpConfig({
+            ...smtpConfig,
+            [name]: type === 'checkbox' ? checked : value,
+        });
     };
 
-    const handleEmailChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setToSend({ ...toSend, [e.target.name]: e.target.value });
+    const handleToSendChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const { name, value, type, checked } = e.target;
+        setToSend({ ...toSend, [name]: type === 'checkbox' ? checked : value, });
     };
 
-    const onSubmit = (e: FormEvent) => {
-        const htmlOutput = toSend.myHTML ? toSend.myHTML : handleOutput(verticalElements, (htmlOutput: string) => htmlOutput)
+    const onSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
-        emailjs.send(
-            emailJSConfig.service_id,
-            emailJSConfig.template_id,
-            {
-                from_name: toSend.from_name,
-                to_name: toSend.to_name,
-                reply_to: toSend.reply_to,
-                myHTML: htmlOutput,
-            },
-            emailJSConfig.public_key
-        ).then(
-            (response) => {
+        const { htmlOutput, attachments } = await handleOutput(
+            verticalElements,
+            (htmlOutput: string, attachments: EmailAttachment[]) => {
+                return { htmlOutput, attachments }
+            }, toSend.cidBasedImageEmbedding);
+
+        try {
+            const response = await axios.post(`${process.env.REACT_APP_SMTP_SERVICE_URL}/send-email`, {
+                sender: smtpConfig.from,
+                ...toSend,
+                body: toSend.body ? toSend.body : htmlOutput,
+                attachments
+            });
+
+            if (response.status === 200) {
                 alert('Email sent successfully!');
-            },
-            (error) => {
-                console.error('Failed to send email:', error);
-                alert(`Failed to send email: ${error.text}`);
+            } else {
+                alert('Failed to send email.');
             }
-        );
+        } catch (error) {
+            console.error('Failed to send email:', error);
+            alert(`Failed to send email: ${error.message}`);
+        }
 
         onClose();
     };
@@ -81,61 +73,88 @@ const EmailForm: React.FC<EmailFormProps> = ({ open, onClose }) => {
         <Modal open={open} onClose={onClose}>
             <Box sx={styles.emailModal}>
                 <Box sx={styles.modalContent}>
-                    <h2>EmailJS Configuration</h2>
+                    <h2>SMTP Configuration</h2>
                     <TextField
-                        label="Service ID"
-                        name="service_id"
-                        value={emailJSConfig.service_id}
+                        label="SMTP Host"
+                        name="host"
+                        value={smtpConfig.host}
                         onChange={handleConfigChange}
                         fullWidth
                     />
                     <TextField
-                        label="Template ID"
-                        name="template_id"
-                        value={emailJSConfig.template_id}
+                        label="SMTP Port"
+                        name="port"
+                        value={smtpConfig.port}
                         onChange={handleConfigChange}
                         fullWidth
                     />
                     <TextField
-                        label="Public Key"
-                        name="public_key"
-                        value={emailJSConfig.public_key}
+                        label="SMTP Username"
+                        name="username"
+                        value={smtpConfig.username}
                         onChange={handleConfigChange}
                         fullWidth
                     />
-                    <h2>Email Form</h2>
                     <TextField
-                        label="From name"
-                        type="text"
-                        name="from_name"
-                        value={toSend.from_name}
-                        onChange={handleEmailChange}
+                        label="SMTP Password"
+                        name="password"
+                        type="password"
+                        value={smtpConfig.password}
+                        onChange={handleConfigChange}
                         fullWidth
                     />
                     <TextField
-                        label="To name"
-                        type="text"
-                        name="to_name"
-                        value={toSend.to_name}
-                        onChange={handleEmailChange}
+                        label="From Email"
+                        name="from"
+                        value={smtpConfig.from}
+                        onChange={handleConfigChange}
                         fullWidth
                     />
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={smtpConfig.secure}
+                                onChange={handleConfigChange}
+                                name="secure"
+                            />
+                        }
+                        label="Use SSL/TLS (Secure Connection)"
+                    />
+                    <h2>Email Details</h2>
                     <TextField
-                        label="Reply-to email"
+                        label="To Email"
                         type="email"
-                        name="reply_to"
-                        value={toSend.reply_to}
-                        onChange={handleEmailChange}
+                        name="recipient"
+                        value={toSend.recipient}
+                        onChange={handleToSendChange}
                         fullWidth
                     />
                     <TextField
-                        label="Your message (HTML)"
-                        name="myHTML"
-                        value={toSend.myHTML}
-                        onChange={handleEmailChange}
+                        label="Title"
+                        type="text"
+                        name="title"
+                        value={toSend.title}
+                        onChange={handleToSendChange}
+                        fullWidth
+                    />
+                    <TextField
+                        label="Message (HTML)"
+                        name="body"
+                        value={toSend.body}
+                        onChange={handleToSendChange}
                         multiline
                         rows={4}
                         fullWidth
+                    />
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={toSend.cidBasedImageEmbedding}
+                                onChange={handleToSendChange}
+                                name="cidBasedImageEmbedding"
+                            />
+                        }
+                        label="Use CID-based Image Embedding (Inline Images)"
                     />
                     <Button variant="contained" color="primary" onClick={onSubmit}>
                         Send

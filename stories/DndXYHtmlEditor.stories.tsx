@@ -1,7 +1,7 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { DndXYHtmlEditor } from "../src/DndXYHtmlEditor";
-import { DndXYHtmlEditorProps, HtmlElement } from "DndXYHtmlEditor.types";
+import { DndXYHtmlEditorProps } from "DndXYHtmlEditor.types";
 import { demoHtmlElements } from "../src/components/Demo/DemoHtmlElements";
 
 const meta = {

@@ -1,7 +1,17 @@
+import { EmailAttachment } from "smtp-server/types";
+
+export interface FormattedHtmlOutput {
+  (
+    htmlOutput?: string,
+    attachments?: EmailAttachment[]
+  ): { htmlOutput: string; attachments: EmailAttachment[] };
+}
+
 export interface DndXYHtmlEditorProps
-  extends VerticalElementConfigurationProps, ToolbarConfigurationProps {
+  extends VerticalElementConfigurationProps,
+    ToolbarConfigurationProps {
   htmlElements: HtmlElement[];
-  formattedHtmlOutput?: (htmlOutput: string) => void;
+  formattedHtmlOutput?: FormattedHtmlOutput
   translations?: Translations;
 }
 

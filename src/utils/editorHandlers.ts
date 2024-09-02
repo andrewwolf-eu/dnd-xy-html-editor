@@ -2,8 +2,10 @@ import React from "react";
 import ReactDOMServer from "react-dom/server";
 import { arrayMove } from "@dnd-kit/sortable";
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
+import * as cheerio from "cheerio";
 import { getComponent } from "../components/componentRegistry";
-import { VerticalElement } from "../DndXYHtmlEditor.types";
+import { FormattedHtmlOutput, VerticalElement } from "../DndXYHtmlEditor.types";
+import { EmailAttachment } from "smtp-server/types";
 
 // Utility to serialize elements
 const serializeElement = (horizontalElements: JSX.Element) => {
@@ -169,9 +171,10 @@ const convertElementToHTML = (element: JSX.Element): string => {
   return ReactDOMServer.renderToString(element);
 };
 
-export const handleOutput = (
+export const handleOutput = async (
   verticalElements: VerticalElement[],
-  formattedHtmlOutput?: (htmlOutput: string) => void
+  formattedHtmlOutput?: FormattedHtmlOutput,
+  cidBasedImageEmbedding?: boolean
 ) => {
   const htmlContent = verticalElements
     .map((verticalElement) => {
@@ -218,6 +221,37 @@ export const handleOutput = (
     })
     .join("");
 
+  // Load the HTML content into Cheerio
+  const $ = cheerio.load(`<html><body>${htmlContent}</body></html>`);
+
+  // Array to hold the attachment objects
+  const attachments: EmailAttachment[] = [];
+
+  $("img").each(function (index) {
+    const src = $(this).attr("src");
+    if (src) {
+      const urlWithoutQuery = src.split("?")[0]; // Remove query parameters
+      const ext = urlWithoutQuery.split(".").pop(); // Get the file extension
+      const filename = `image${index + 1}.${ext}`;
+      const cid = `image${index + 1}`;
+
+      attachments.push({
+        filename: filename,
+        path: src,
+        cid: cid,
+      });
+
+      // Update the src attribute to use CID
+      if (cidBasedImageEmbedding) {
+        $(this).attr("src", `cid:${cid}`);
+      }
+    }
+  });
+
+  // Get the updated HTML content after modifying img tags
+  const updatedHtmlContent = $("body").html();
+
+  // Wrap the HTML content in your desired structure
   const formattedHtmlContent = `
     <html>
       <head>
@@ -247,15 +281,20 @@ export const handleOutput = (
         </style>
       </head>
       <body>
-        ${htmlContent}
+        ${cidBasedImageEmbedding ? updatedHtmlContent : htmlContent}
       </body>
     </html>
   `;
 
+  // If a callback is provided, call it with the HTML content and attachments
   if (formattedHtmlOutput) {
-    return formattedHtmlOutput(formattedHtmlContent);
+    return formattedHtmlOutput(
+      formattedHtmlContent,
+      cidBasedImageEmbedding ? attachments : undefined
+    );
   }
 
+  // Optionally open the formatted content in a new window
   const newWindow = window.open();
   if (newWindow) {
     newWindow.document.write(formattedHtmlContent);
