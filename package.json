@@ -2,10 +2,10 @@
   "name": "@andrew-wolf/dnd-xy-html-editor",
   "version": "0.0.16",
   "main": "./build/index.js",
-  "module": "./build/index.es.js",
+  "type": "module",
   "types": "./build/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "smtp-server": "nodemon --watch src --exec 'npx tsx' src/smtp-server/smtp-server.ts",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "build": "rollup -c",
@@ -25,10 +25,12 @@
     "@mui/material": "^5.16.4",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
+    "dotenv": "^16.4.5",
     "emailjs-com": "^3.2.0",
+    "express": "^4.19.2",
+    "nodemailer": "^6.9.14",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "typescript": "^5.5.3"
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^1.6.1",
@@ -41,11 +43,15 @@
     "@storybook/react": "^8.2.1",
     "@storybook/react-webpack5": "^8.2.1",
     "@storybook/test": "^8.2.1",
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.5.2",
+    "nodemon": "^3.1.4",
     "prop-types": "^15.8.1",
     "rollup": "^4.18.0",
     "rollup-plugin-includepaths": "^0.2.4",
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-typescript2": "^0.34.1",
-    "storybook": "^8.2.1"
+    "storybook": "^8.2.1",
+    "typescript": "^5.5.4"
   }
 }

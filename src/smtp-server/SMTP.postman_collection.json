@@ -1,0 +1,38 @@
+{
+	"info": {
+		"_postman_id": "b6bca68c-7213-4beb-b7e1-81f446c47564",
+		"name": "SMTP",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8224039"
+	},
+	"item": [
+		{
+			"name": "Test email",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"sender\": \"farkas.andras@gmail.com\",\n  \"recipient\": \"farkas.andras@gmail.com\",\n  \"title\": \"Test Email with Attachments\",\n  \"body\": \"<p>This email contains an image attachment.</p><p>Here is the image:</p><img src=\\\"cid:unique_image_id\\\" alt=\\\"Image\\\" />\",\n  \"attachments\": [\n    {\n      \"filename\": \"Front.png\",\n      \"path\": \"/Users/farkasandras/Dev/SMTPServer/Front.jpg\",\n      \"cid\": \"unique_image_id\"\n    }\n  ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:1234/send-email",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "1234",
+					"path": [
+						"send-email"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
