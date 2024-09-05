@@ -1,4 +1,5 @@
 node_modules
+stories
 storybook-static
 .cache
 .storybook
@@ -7,3 +8,5 @@ src
 .babelrc.json
 tsconfig.json
 rollup.config.mjs
+.env
+.env.example

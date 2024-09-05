@@ -1,18 +1,10 @@
-import { EmailAttachment } from "smtp-server/types";
-
-export interface FormattedHtmlOutput {
-  (
-    htmlOutput?: string,
-    attachments?: EmailAttachment[]
-  ): { htmlOutput: string; attachments: EmailAttachment[] };
-}
-
 export interface DndXYHtmlEditorProps
   extends VerticalElementConfigurationProps,
+    ActionButtonProps,
     ToolbarConfigurationProps {
   htmlElements: HtmlElement[];
-  formattedHtmlOutput?: FormattedHtmlOutput
   translations?: Translations;
+  localStorageSave?: boolean;
 }
 
 export interface EditorAreaProps
@@ -100,6 +92,15 @@ interface VerticalElementConfigurationProps {
     enableMultipleContainer?: boolean;
     enableDimensionSelector?: boolean;
     defaultContainerWidthInPercentage?: number;
+  };
+}
+
+interface ActionButtonProps {
+  actionButtons?: {
+    saveEditorStateAction?: boolean;
+    loadEditorStateAction?: boolean;
+    htmlOutputAction?: boolean;
+    sendEmailAction?: boolean;
   };
 }
 

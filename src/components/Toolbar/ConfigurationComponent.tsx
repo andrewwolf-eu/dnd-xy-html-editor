@@ -105,19 +105,19 @@ export const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ 
 
             const updatedProps = horizontalElement.props.hasOwnProperty('htmlElement')
               ? {
-                  ...horizontalElement.props,
-                  htmlElement: {
-                    ...horizontalElement.props.htmlElement,
-                    configuration: {
-                      ...horizontalElement.props.htmlElement.configuration,
-                      [name]: configuration[name],
-                    },
+                ...horizontalElement.props,
+                htmlElement: {
+                  ...horizontalElement.props.htmlElement,
+                  configuration: {
+                    ...horizontalElement.props.htmlElement.configuration,
+                    [name]: configuration[name],
                   },
-                }
+                },
+              }
               : {
-                  ...horizontalElement.props,
-                  [name]: configuration[name],
-                };
+                ...horizontalElement.props,
+                [name]: configuration[name],
+              };
 
             return {
               ...horizontalElement,
@@ -141,6 +141,7 @@ export const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ 
         <div>
           {options.map((option, index) => (
             <button
+              type='button'
               key={index}
               onClick={() => handleChange({ name: key, value: option })}
             >
@@ -215,7 +216,7 @@ export const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ 
     }
   };
 
-  const updateKeyValue = ({key, value}: {key: string, value: string}) => {
+  const updateKeyValue = ({ key, value }: { key: string, value: string }) => {
     setFormState((prevState) => ({
       ...prevState,
       [key]: value,

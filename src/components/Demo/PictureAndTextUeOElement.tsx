@@ -27,30 +27,32 @@ export const PictureAndTextUeOElement = (props: htmlElementConfiguration) => {
     margin: props?.textMargin?.value,
   };
 
-  const Image = () => (<tr><td align={props?.pictureAlign?.value} valign="top" width="50%"><img
+  const Image = () => (<td align={props?.pictureAlign?.value} valign="top" width="50%"><img
     src={props?.src}
     alt={props?.alt}
     width={props?.width}
     height={props?.height}
-  /></td></tr>)
+  /></td>)
 
-  const Text = () => (<tr><td align={paragraphStyle?.textAlign?.value} valign="top" width="50%"><p style={paragraphStyle}>{props.content}</p></td></tr>)
+  const Text = () => (<td align={paragraphStyle?.textAlign?.value} valign="top" width="50%"><p style={paragraphStyle}>{props.content}</p></td>)
 
   return (
     <table style={{ width: "100%" }} cellPadding={0} cellSpacing={0} border={0}>
-      <tr>
-        {props?.picturePosition?.value === "top" ? (
-          <>
-            <Image />
-            <Text />
-          </>
-        ) : (
-          <>
-            <Text />
-            <Image />
-          </>
-        )}
-      </tr>
+      <tbody>
+        <tr>
+          {props?.picturePosition?.value === "top" ? (
+            <>
+              <Image />
+              <Text />
+            </>
+          ) : (
+            <>
+              <Text />
+              <Image />
+            </>
+          )}
+        </tr>
+      </tbody>
     </table >
   );
 }

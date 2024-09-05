@@ -82,7 +82,7 @@ const EditorArea = ({
             const itemId = element.key || `element-${verticalElement.id}-${index}`;
             const isSelectedItem = selectedHorizontalElement === itemId;
             return (
-              <SortableItem id={itemId} itemWidth={dimensions[index % dimensions.length]}>
+              <SortableItem key={itemId} id={itemId} itemWidth={dimensions[index % dimensions.length]}>
                 <div
                   key={itemId}
                   style={{

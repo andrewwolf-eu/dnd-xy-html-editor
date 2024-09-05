@@ -5,14 +5,13 @@ import { useEditor } from '../../context/EditorContext';
 import { handleOutput } from '../../utils/editorHandlers';
 import axios from 'axios';
 import { EmailFormProps, SMTPConfig, ToSend } from './types';
-import { EmailAttachment } from 'smtp-server/types';
 
 const EmailForm: React.FC<EmailFormProps> = ({ open, onClose }) => {
     const { verticalElements } = useEditor();
 
     const [smtpConfig, setSmtpConfig] = useState<SMTPConfig>({
         host: process.env.REACT_APP_SMTP_HOST || '',
-        username: process.env.REACT_APP_SMTP_USERNAME || '',
+        username: process.env.REACT_APP_SMTP_USER || '',
         password: process.env.REACT_APP_SMTP_PASSWORD || '',
         port: process.env.REACT_APP_SMTP_PORT || '',
         secure: process.env.REACT_APP_SMTP_SECURE === 'true',
@@ -42,11 +41,10 @@ const EmailForm: React.FC<EmailFormProps> = ({ open, onClose }) => {
     const onSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
-        const { htmlOutput, attachments } = await handleOutput(
+        const { htmlOutput, attachments } = handleOutput(
             verticalElements,
-            (htmlOutput: string, attachments: EmailAttachment[]) => {
-                return { htmlOutput, attachments }
-            }, toSend.cidBasedImageEmbedding);
+            false,
+            toSend.cidBasedImageEmbedding);
 
         try {
             const response = await axios.post(`${process.env.REACT_APP_SMTP_SERVICE_URL}/send-email`, {
@@ -156,7 +154,7 @@ const EmailForm: React.FC<EmailFormProps> = ({ open, onClose }) => {
                         }
                         label="Use CID-based Image Embedding (Inline Images)"
                     />
-                    <Button variant="contained" color="primary" onClick={onSubmit}>
+                    <Button type='button' variant="contained" color="primary" onClick={onSubmit}>
                         Send
                     </Button>
                 </Box>

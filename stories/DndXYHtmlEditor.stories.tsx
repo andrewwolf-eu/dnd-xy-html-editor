@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { DndXYHtmlEditor } from "../src/DndXYHtmlEditor";
 import { DndXYHtmlEditorProps } from "DndXYHtmlEditor.types";
@@ -18,21 +18,60 @@ type Story = StoryObj<typeof meta>;
 
 export const Demo: Story = {
   render: (args: DndXYHtmlEditorProps) => {
-    return (<DndXYHtmlEditor {...args} />)
+    const [editorState, setEditorState] = useState<string>('')
+    const htmlEditorRef = useRef(null);
+
+    const loadState = (editorState: string) => {
+      if (htmlEditorRef.current) {
+        htmlEditorRef.current.loadState(editorState);
+      }
+    };
+
+    const saveState = () => {
+      if (htmlEditorRef.current) {
+        const state = htmlEditorRef.current.saveState();
+        setEditorState(state)
+      }
+    };
+
+    const htmlPreview = () => {
+      if (htmlEditorRef.current) {
+        htmlEditorRef.current.htmlPreview();
+      }
+    };
+
+    const htmlOutput = (attachmentsWithCid: boolean) => {
+      if (htmlEditorRef.current) {
+        const htmlOutput = htmlEditorRef.current.htmlOutput(attachmentsWithCid);
+        console.log({ htmlOutput })
+      }
+    };
+
+    return (<>
+      <button type='button' onClick={() => loadState(editorState)}>Load State</button>
+      <button type='button' onClick={saveState}>Save State</button>
+      <button type='button' onClick={htmlPreview}>HTML Preview</button>
+      <button type='button' onClick={() => htmlOutput(true)}>HTML Output</button>
+      <DndXYHtmlEditor ref={htmlEditorRef} {...args} />
+    </>)
   },
   args: {
     htmlElements: demoHtmlElements,
+    localStorageSave: true,
     verticalElementConfiguration: {
       enableMultipleContainer: true,
       enableDimensionSelector: true,
       defaultContainerWidthInPercentage: 70,
     },
+    actionButtons: {
+      saveEditorStateAction: true,
+      loadEditorStateAction: true,
+      htmlOutputAction: true,
+      sendEmailAction: true,
+    },
     toolbarConfiguration: {
       columnsInElements: 2,
     },
-    /* formattedHtmlOutput: (htmlOutput: string) => {
-      console.log({ htmlOutput })
-    } */
     translations: {
       toolbar: {
         elements: {

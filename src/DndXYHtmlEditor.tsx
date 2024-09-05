@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, forwardRef, useImperativeHandle } from "react";
 import {
   DndContext,
   DragOverlay,
@@ -23,27 +23,37 @@ import { DndXYHtmlEditorProps } from "DndXYHtmlEditor.types";
 import { styles } from "./DndXYHtmlEditor.styles";
 import { registerComponent } from "../src/components/componentRegistry";
 
-export const DndXYHtmlEditor = (props: DndXYHtmlEditorProps) => {
+export const DndXYHtmlEditor = forwardRef((props: DndXYHtmlEditorProps, ref) => {
   return (
     <EditorProvider>
-      <AppContent {...props} />
+      <AppContent ref={ref} {...props} />
     </EditorProvider>
   );
-};
+});
 
-const AppContent = ({
+const AppContent = forwardRef(({
   verticalElementConfiguration: {
     enableMultipleContainer = false,
     enableDimensionSelector = false,
     defaultContainerWidthInPercentage = 70,
   } = {},
+  actionButtons,
+  actionButtons: {
+    saveEditorStateAction = false,
+    loadEditorStateAction = false,
+    htmlOutputAction = false,
+    sendEmailAction = false,
+  } = {},
   toolbarConfiguration: {
     columnsInElements = 2,
   } = {},
   htmlElements,
-  formattedHtmlOutput,
   translations,
-}: DndXYHtmlEditorProps) => {
+  localStorageSave = false,
+}: DndXYHtmlEditorProps, ref) => {
+  useImperativeHandle(ref, () => ({
+    loadState, saveState, htmlPreview, htmlOutput,
+  }));
   const {
     setHtmlElements,
     verticalElements, setVerticalElements,
@@ -51,6 +61,19 @@ const AppContent = ({
     setSelectedHorizontalElement,
     addVerticalElement
   } = useEditor();
+  const loadState = (editorState: string) => {
+    handleLoad(setVerticalElements, localStorageSave, editorState)
+  };
+  const saveState = () => {
+    return handleSave(verticalElements, localStorageSave)
+  };
+  const htmlPreview = () => {
+    handleOutput(verticalElements, true)
+  };
+  const htmlOutput = (attachmentsWithCid: boolean) => {
+    return handleOutput(verticalElements, false, attachmentsWithCid)
+  };
+
   const [activeId, setActiveId] = useState<string | null>(null);
   const [activeElement, setActiveElement] = useState<JSX.Element | null>(null);
   const [containerHeight, setContainerHeight] = useState<number>(window.innerHeight);
@@ -126,13 +149,13 @@ const AppContent = ({
           onMouseDown={handleMouseDown}
         />
         <div style={{ ...styles.toolbarContainer, flexBasis: `${100 - editorWidthPercent}%`, }}>
-          <div style={styles.controls}>
-            {enableMultipleContainer && <button onClick={addVerticalElement}>{translations?.actionButtons?.addVerticalElement ?? 'Add Vertical Element'}</button>}
-            <button onClick={() => handleSave(verticalElements)}>{translations?.actionButtons?.save ?? 'Save'}</button>
-            <button onClick={() => handleLoad(setVerticalElements)}>{translations?.actionButtons?.load ?? 'Load'}</button>
-            <button onClick={() => handleOutput(verticalElements, formattedHtmlOutput)}>{translations?.actionButtons?.htmlOutput ?? 'HTML Output'}</button>
-            <EmailModal translations={translations} />
-          </div>
+          {actionButtons && <div style={styles.controls}>
+            {enableMultipleContainer && <button type='button' onClick={addVerticalElement}>{translations?.actionButtons?.addVerticalElement ?? 'Add Vertical Element'}</button>}
+            {saveEditorStateAction && <button type='button' onClick={() => handleSave(verticalElements, localStorageSave)}>{translations?.actionButtons?.save ?? 'Save'}</button>}
+            {loadEditorStateAction && <button type='button' onClick={() => handleLoad(setVerticalElements, localStorageSave)}>{translations?.actionButtons?.load ?? 'Load'}</button>}
+            {htmlOutputAction && <button type='button' onClick={() => handleOutput(verticalElements, true)}>{translations?.actionButtons?.htmlOutput ?? 'HTML Output'}</button>}
+            {sendEmailAction && <EmailModal translations={translations} />}
+          </div>}
           <Toolbar toolbarConfiguration={{ columnsInElements }} translations={translations} />
         </div>
         <DragOverlay>
@@ -145,4 +168,4 @@ const AppContent = ({
       </div>
     </DndContext>
   );
-};
+});

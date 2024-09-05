@@ -4,7 +4,7 @@ import { arrayMove } from "@dnd-kit/sortable";
 import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import * as cheerio from "cheerio";
 import { getComponent } from "../components/componentRegistry";
-import { FormattedHtmlOutput, VerticalElement } from "../DndXYHtmlEditor.types";
+import { VerticalElement } from "../DndXYHtmlEditor.types";
 import { EmailAttachment } from "smtp-server/types";
 
 // Utility to serialize elements
@@ -127,7 +127,10 @@ export const handleDragEnd = (
   }
 };
 
-export const handleSave = (verticalElements: VerticalElement[]) => {
+export const handleSave: (
+  verticalElements: VerticalElement[],
+  localStorageSave?: boolean
+) => string = (verticalElements, localStorageSave) => {
   try {
     const serializedVerticalElements = verticalElements.map(
       (verticalElement) => ({
@@ -136,21 +139,29 @@ export const handleSave = (verticalElements: VerticalElement[]) => {
           verticalElement.horizontalElements.map(serializeElement),
       })
     );
-    localStorage.setItem(
-      "DndXYHtmlEditor",
-      JSON.stringify(serializedVerticalElements)
-    );
+    if (localStorageSave) {
+      localStorage.setItem(
+        "DndXYHtmlEditor",
+        JSON.stringify(serializedVerticalElements)
+      );
+    }
     console.log("Saved successfully!");
+    return JSON.stringify(serializedVerticalElements);
   } catch (error) {
-    console.error("Error saving to localStorage", error);
+    console.error("Error saving state", error);
   }
 };
 
 export const handleLoad = (
-  setVerticalElements: React.Dispatch<React.SetStateAction<VerticalElement[]>>
+  setVerticalElements: React.Dispatch<React.SetStateAction<VerticalElement[]>>,
+  localStorageSave?: boolean,
+  editorState?: string,
 ) => {
   try {
-    const savedVerticalElements = localStorage.getItem("DndXYHtmlEditor");
+    let savedVerticalElements = editorState
+    if (localStorageSave) {
+      savedVerticalElements = localStorage.getItem("DndXYHtmlEditor");
+    }
     if (savedVerticalElements) {
       const parsedVerticalElements = JSON.parse(savedVerticalElements).map(
         (verticalElement: VerticalElement) => ({
@@ -163,7 +174,7 @@ export const handleLoad = (
       console.log("Loaded vertical elements:", parsedVerticalElements);
     }
   } catch (error) {
-    console.error("Error loading from localStorage", error);
+    console.error("Error loading from state", error);
   }
 };
 
@@ -171,10 +182,10 @@ const convertElementToHTML = (element: JSX.Element): string => {
   return ReactDOMServer.renderToString(element);
 };
 
-export const handleOutput = async (
+export const handleOutput = (
   verticalElements: VerticalElement[],
-  formattedHtmlOutput?: FormattedHtmlOutput,
-  cidBasedImageEmbedding?: boolean
+  preview: boolean = false,
+  cidBasedImageEmbedding: boolean = true
 ) => {
   const htmlContent = verticalElements
     .map((verticalElement) => {
@@ -248,56 +259,26 @@ export const handleOutput = async (
     }
   });
 
+  // Optionally open the formatted content in a new window
+  if (preview) {
+    const newWindow = window.open();
+    if (newWindow) {
+      newWindow.document.write(htmlContent);
+      newWindow.document.close();
+    }
+  }
+
   // Get the updated HTML content after modifying img tags
   const updatedHtmlContent = $("body").html();
 
-  // Wrap the HTML content in your desired structure
-  const formattedHtmlContent = `
-    <html>
-      <head>
-        <style>
-          body {
-            margin: 0;
-          }
-          .flex-container {
-            display: flex;
-            flex-direction: column;
-          }
-          .flex-row {
-            display: flex;
-            width: 100%;
-          }
-          .flex-column {
-            border: 1px solid #ddd;
-            background-color: #fff;
-            min-height: 100px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            flex-grow: 1;
-            flex-shrink: 0;
-          }
-        </style>
-      </head>
-      <body>
-        ${cidBasedImageEmbedding ? updatedHtmlContent : htmlContent}
-      </body>
-    </html>
-  `;
-
-  // If a callback is provided, call it with the HTML content and attachments
-  if (formattedHtmlOutput) {
-    return formattedHtmlOutput(
-      formattedHtmlContent,
-      cidBasedImageEmbedding ? attachments : undefined
-    );
-  }
-
-  // Optionally open the formatted content in a new window
-  const newWindow = window.open();
-  if (newWindow) {
-    newWindow.document.write(formattedHtmlContent);
-    newWindow.document.close();
+  if (cidBasedImageEmbedding) {
+    return {
+      htmlOutput: updatedHtmlContent,
+      attachments: attachments,
+    };
+  } else {
+    return {
+      htmlOutput: htmlContent,
+    };
   }
 };

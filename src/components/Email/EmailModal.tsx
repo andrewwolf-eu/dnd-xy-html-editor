@@ -7,7 +7,7 @@ const EmailModal: React.FC<{ translations: Translations }> = ({ translations }) 
 
   return (
     <>
-      <button onClick={() => setIsModalOpen(true)}>
+      <button type='button' onClick={() => setIsModalOpen(true)}>
         {translations?.actionButtons?.sendEmail ?? 'Send e-mail'}
       </button>
       <EmailForm

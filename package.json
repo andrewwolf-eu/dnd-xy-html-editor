@@ -1,15 +1,16 @@
 {
   "name": "@andrew-wolf/dnd-xy-html-editor",
-  "version": "0.0.17",
+  "version": "0.0.21",
   "main": "./build/index.js",
-  "type": "module",
+  "module": "./build/index.es.js",
   "types": "./build/index.d.ts",
   "scripts": {
     "smtp-server": "nodemon --watch src --exec 'npx tsx' src/smtp-server/smtp-server.ts",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "build": "rollup -c",
-    "publish": "npm publish --access public"
+    "publish": "npm publish --access public",
+    "unpublish": "npm unpublish @andrew-wolf/dnd-xy-html-editor@0.0.20"
   },
   "keywords": [],
   "author": "Andrew Wolf",

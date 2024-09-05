@@ -41,10 +41,10 @@ const Toolbar: React.FC<ToolbarConfigurationProps & { translations: Translations
     <div style={styles.toolbar}>
       {/* Tab Navigation */}
       <div>
-        <button onClick={() => handleTabChange('elements')} style={activeTab === 'elements' ? styles.activeTab : styles.tab}>
+        <button type='button' onClick={() => handleTabChange('elements')} style={activeTab === 'elements' ? styles.activeTab : styles.tab}>
           {translations?.toolbar?.elements.tab ?? 'Elements'}
         </button>
-        <button onClick={() => handleTabChange('configuration')} style={activeTab === 'configuration' ? styles.activeTab : styles.tab}>
+        <button type='button' onClick={() => handleTabChange('configuration')} style={activeTab === 'configuration' ? styles.activeTab : styles.tab}>
           {translations?.toolbar?.configuration.tab ?? 'Configuration'}
         </button>
       </div>

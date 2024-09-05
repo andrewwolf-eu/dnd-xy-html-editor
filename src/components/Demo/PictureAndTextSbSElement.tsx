@@ -38,19 +38,21 @@ export const PictureAndTextSbSElement = (props: htmlElementConfiguration) => {
 
   return (
     <table style={{ width: "100%" }} cellPadding={0} cellSpacing={0} border={0}>
-      <tr>
-        {props?.picturePosition?.value === "left" ? (
-          <>
-            <Image />
-            <Text />
-          </>
-        ) : (
-          <>
-            <Text />
-            <Image />
-          </>
-        )}
-      </tr>
+      <tbody>
+        <tr>
+          {props?.picturePosition?.value === "left" ? (
+            <>
+              <Image />
+              <Text />
+            </>
+          ) : (
+            <>
+              <Text />
+              <Image />
+            </>
+          )}
+        </tr>
+      </tbody>
     </table >
   );
 };
