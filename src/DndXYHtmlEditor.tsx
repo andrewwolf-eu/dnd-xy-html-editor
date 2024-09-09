@@ -70,8 +70,8 @@ const AppContent = forwardRef(({
   const htmlPreview = () => {
     handleOutput(verticalElements, true)
   };
-  const htmlOutput = (attachmentsWithCid: boolean) => {
-    return handleOutput(verticalElements, false, attachmentsWithCid)
+  const htmlOutput = (attachmentsWithCid?: boolean, plainText?: string) => {
+    return handleOutput(verticalElements, false, attachmentsWithCid, plainText)
   };
 
   const [activeId, setActiveId] = useState<string | null>(null);

@@ -185,7 +185,8 @@ const convertElementToHTML = (element: JSX.Element): string => {
 export const handleOutput = (
   verticalElements: VerticalElement[],
   preview: boolean = false,
-  cidBasedImageEmbedding: boolean = true
+  cidBasedImageEmbedding: boolean = true,
+  plainText: string = ""
 ) => {
   const htmlContent = verticalElements
     .map((verticalElement) => {
@@ -271,14 +272,27 @@ export const handleOutput = (
   // Get the updated HTML content after modifying img tags
   const updatedHtmlContent = $("body").html();
 
+  // If plainText is provided, generate the plain text email content
+  let plainTextOutput = "";
+  if (plainText) {
+    // Basic conversion to plain text, stripping out HTML tags
+    plainTextOutput = plainText;
+  } else {
+    // Convert the HTML content to plain text (basic stripping of HTML tags)
+    plainTextOutput = $.text();
+  }
+
+  // Return the output based on the cidBasedImageEmbedding and plainText
   if (cidBasedImageEmbedding) {
     return {
       htmlOutput: updatedHtmlContent,
       attachments: attachments,
+      plainTextOutput: plainTextOutput, // Include plain text in the return
     };
   } else {
     return {
       htmlOutput: htmlContent,
+      plainTextOutput: plainTextOutput, // Include plain text in the return
     };
   }
 };

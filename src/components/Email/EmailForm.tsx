@@ -21,7 +21,27 @@ const EmailForm: React.FC<EmailFormProps> = ({ open, onClose }) => {
     const [toSend, setToSend] = useState<ToSend>({
         recipient: '',
         title: '',
-        body: '',
+        htmlBody: '',
+        plainTextBody: `
+        Hi John,
+        
+        Thank you for signing up for our newsletter at XYZ Corp! We're excited to share the latest updates, news, and exclusive content with you.
+        
+        Here's what you can look forward to:
+        - Weekly updates on the latest trends
+        - Exclusive offers and discounts just for subscribers
+        - Expert insights and tips directly from our team
+        
+        If you ever have any questions, feel free to reply to this email or visit our website at https://xyzcorp.com.
+        
+        Thanks again for joining us!
+        
+        Best regards,
+        The XYZ Corp Team
+        https://xyzcorp.com
+        1234 Street Name, City, Country
+        Phone: (123) 456-7890
+        `,
         cidBasedImageEmbedding: true,
     });
 
@@ -41,16 +61,19 @@ const EmailForm: React.FC<EmailFormProps> = ({ open, onClose }) => {
     const onSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
-        const { htmlOutput, attachments } = handleOutput(
+        const { htmlOutput, plainTextOutput, attachments } = handleOutput(
             verticalElements,
             false,
-            toSend.cidBasedImageEmbedding);
+            toSend.cidBasedImageEmbedding,
+            toSend.plainTextBody,
+        );
 
         try {
             const response = await axios.post(`${process.env.REACT_APP_SMTP_SERVICE_URL}/send-email`, {
                 sender: smtpConfig.from,
                 ...toSend,
-                body: toSend.body ? toSend.body : htmlOutput,
+                plainTextBody: toSend.plainTextBody ? toSend.plainTextBody : plainTextOutput,
+                htmlBody: htmlOutput,
                 attachments
             });
 
@@ -137,8 +160,8 @@ const EmailForm: React.FC<EmailFormProps> = ({ open, onClose }) => {
                     />
                     <TextField
                         label="Message (HTML)"
-                        name="body"
-                        value={toSend.body}
+                        name="plainTextBody"
+                        value={toSend.plainTextBody}
                         onChange={handleToSendChange}
                         multiline
                         rows={4}

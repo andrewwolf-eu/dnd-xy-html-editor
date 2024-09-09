@@ -8,6 +8,7 @@ export interface EmailOptions {
   sender: string;
   recipient: string;
   title: string;
-  body: string;
+  htmlBody: string;
+  plainTextBody: string;
   attachments?: EmailAttachment[];
 }

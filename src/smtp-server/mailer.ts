@@ -12,7 +12,7 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port: Number(process.env.SMTP_PORT),
-    secure: process.env.SMTP_SECURE === "true",
+    secure: process.env.SMTP_SECURE === "true", // true for 465, false for other ports
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASSWORD,
@@ -23,8 +23,8 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
     from: options.sender || process.env.SMTP_USER,
     to: options.recipient,
     subject: options.title,
-    text: options.body,
-    html: options.body,
+    text: options.plainTextBody || "",
+    html: options.htmlBody || "",
     attachments: options.attachments?.map((file) => ({
       filename: file.filename,
       path: file.path,
@@ -32,6 +32,10 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
     })),
   };
 
-  const info = await transporter.sendMail(mailOptions);
-  console.log("Message sent: %s", info.messageId);
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Message sent: %s", info.messageId);
+  } catch (error) {
+    console.error("Error sending email:", error);
+  }
 }

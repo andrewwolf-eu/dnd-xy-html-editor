@@ -40,9 +40,9 @@ export const Demo: Story = {
       }
     };
 
-    const htmlOutput = (attachmentsWithCid: boolean) => {
+    const htmlOutput = (attachmentsWithCid?: boolean, plainText?: string) => {
       if (htmlEditorRef.current) {
-        const htmlOutput = htmlEditorRef.current.htmlOutput(attachmentsWithCid);
+        const htmlOutput = htmlEditorRef.current.htmlOutput(attachmentsWithCid, plainText);
         console.log({ htmlOutput })
       }
     };
@@ -51,7 +51,7 @@ export const Demo: Story = {
       <button type='button' onClick={() => loadState(editorState)}>Load State</button>
       <button type='button' onClick={saveState}>Save State</button>
       <button type='button' onClick={htmlPreview}>HTML Preview</button>
-      <button type='button' onClick={() => htmlOutput(true)}>HTML Output</button>
+      <button type='button' onClick={() => htmlOutput(true, 'plainTextBody')}>HTML Output</button>
       <DndXYHtmlEditor ref={htmlEditorRef} {...args} />
     </>)
   },

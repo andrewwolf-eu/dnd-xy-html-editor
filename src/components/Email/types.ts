@@ -10,7 +10,8 @@ export interface SMTPConfig {
 export interface ToSend {
   recipient: string;
   title: string;
-  body: string;
+  htmlBody: string;
+  plainTextBody: string;
   cidBasedImageEmbedding: boolean;
 }
 
