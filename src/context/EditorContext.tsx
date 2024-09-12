@@ -20,6 +20,7 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({
   ]);
   const [selectedVerticalElement, setSelectedVerticalElement] = useState<string | null>(null);
   const [selectedHorizontalElement, setSelectedHorizontalElement] = useState<string | null>(null);
+  const [containerHeight, setContainerHeight] = useState<number>(window.innerHeight);
 
   const addVerticalElement = () => {
     setVerticalElements((prevVerticalElements) => [
@@ -37,14 +38,14 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({
   const removeHorizontalElementFromVerticalElement = (verticalElementId: string, horizontalElement: JSX.Element) => {
     setVerticalElements((prevVerticalElements: VerticalElement[]) => {
       console.log({ verticalElementId, prevVerticalElements });
-  
+
       return prevVerticalElements.map((verticalElement: VerticalElement) => {
         if (verticalElement.id === verticalElementId) {
           // Filter out the element to be removed
           const updatedHorizontalElements = verticalElement.horizontalElements.filter(
             horizontalEl => horizontalEl.key !== horizontalElement.key
           );
-  
+
           // Regenerate the keys based on the index in the array
           const rekeyedHorizontalElements = updatedHorizontalElements.map((horizontalEl, index) => {
             return {
@@ -52,7 +53,7 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({
               key: `0-${index}`  // Adjust the key format as needed
             };
           });
-  
+
           // Return the updated vertical element with rekeyed horizontal elements
           return {
             ...verticalElement,
@@ -88,6 +89,8 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({
         removeVerticalElement,
         removeHorizontalElementFromVerticalElement,
         updateVerticalElementDimension,
+        containerHeight,
+        setContainerHeight
       }}
     >
       {children}

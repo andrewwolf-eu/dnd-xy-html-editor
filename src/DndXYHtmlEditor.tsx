@@ -59,7 +59,9 @@ const AppContent = forwardRef(({
     verticalElements, setVerticalElements,
     setSelectedVerticalElement,
     setSelectedHorizontalElement,
-    addVerticalElement
+    addVerticalElement,
+    containerHeight,
+    setContainerHeight
   } = useEditor();
   const loadState = (editorState: string) => {
     handleLoad(setVerticalElements, localStorageSave, editorState)
@@ -76,7 +78,6 @@ const AppContent = forwardRef(({
 
   const [activeId, setActiveId] = useState<string | null>(null);
   const [activeElement, setActiveElement] = useState<JSX.Element | null>(null);
-  const [containerHeight, setContainerHeight] = useState<number>(window.innerHeight);
   const [editorWidthPercent, setEditorWidthPercent] = useState(defaultContainerWidthInPercentage);
 
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));

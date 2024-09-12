@@ -19,18 +19,13 @@ const EditorArea = ({
   const {
     selectedVerticalElement,
     selectedHorizontalElement,
-    removeHorizontalElementFromVerticalElement,
     removeVerticalElement,
+    containerHeight
   } = useEditor();
 
   const { setNodeRef } = useDroppable({
     id: `editor-area-${verticalElementId}`,
   });
-
-  const handleRemoveItem = (element: JSX.Element, event: React.MouseEvent) => {
-    event.stopPropagation();
-    removeHorizontalElementFromVerticalElement(verticalElementId, element);
-  };
 
   const handleItemMouseDown = (itemId: string, event: React.MouseEvent) => {
     let isDragging = false;
@@ -65,12 +60,14 @@ const EditorArea = ({
       )}
       {verticalElementConfiguration.enableMultipleContainer && (
         <IconButton
+          style={styles.delete}
+          size='small'
           onMouseDown={() => removeVerticalElement(verticalElementId)}
         >
           <Delete />
         </IconButton>
       )}
-      <div ref={setNodeRef} style={{ ...styles.editorArea, ...styles.flexContainer }}>
+      <div ref={setNodeRef} style={{ ...styles.editorArea, ...styles.flexContainer, padding: `10px 10px ${containerHeight - 60}px 10px` }}>
         <SortableContext
           items={verticalElement.horizontalElements.map(
             (element, index) =>
@@ -82,7 +79,7 @@ const EditorArea = ({
             const itemId = element.key || `element-${verticalElement.id}-${index}`;
             const isSelectedItem = selectedHorizontalElement === itemId;
             return (
-              <SortableItem key={itemId} id={itemId} itemWidth={dimensions[index % dimensions.length]}>
+              <SortableItem key={itemId} id={itemId} itemWidth={dimensions[index % dimensions.length]} verticalElement={verticalElement} element={element}>
                 <div
                   key={itemId}
                   style={{
@@ -93,12 +90,6 @@ const EditorArea = ({
                 >
                   <div style={styles.editorElement}>
                     {element}
-                    <IconButton
-                      onMouseDown={(e) => handleRemoveItem(element, e)}
-                      style={styles.deleteButton}
-                    >
-                      <Delete />
-                    </IconButton>
                   </div>
                 </div>
               </SortableItem>

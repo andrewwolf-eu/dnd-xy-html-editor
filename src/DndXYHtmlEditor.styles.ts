@@ -5,19 +5,24 @@ export const styles: { [key: string]: CSSProperties } = {
     display: "flex",
     width: "100%",
     height: "100%",
+    backgroundColor: '#fafafa'
   },
   editorAreaContainer: {
+    paddingTop: '30px',
+    paddingLeft: '80px',
+    paddingRight: '80px',
     overflow: "auto",
   },
   resizer: {
     width: "5px",
-    backgroundColor: "gray",
+    backgroundColor: "white",
     cursor: "col-resize",
     position: "relative",
     zIndex: 1,
+    boxShadow: "-3px 0px 5px rgba(0, 0, 0, 0.1)",
   },
   toolbarContainer: {
-    backgroundColor: "#e0e0e0",
+    backgroundColor: "white",
   },
   controls: {
     display: "flex",

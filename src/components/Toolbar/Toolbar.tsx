@@ -40,7 +40,7 @@ const Toolbar: React.FC<ToolbarConfigurationProps & { translations: Translations
   return (
     <div style={styles.toolbar}>
       {/* Tab Navigation */}
-      <div>
+      <div style={styles.tabButtonContainer}>
         <button type='button' onClick={() => handleTabChange('elements')} style={activeTab === 'elements' ? styles.activeTab : styles.tab}>
           {translations?.toolbar?.elements.tab ?? 'Elements'}
         </button>

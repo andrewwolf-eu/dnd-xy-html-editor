@@ -30,6 +30,8 @@ export interface EditorContextType {
     verticalElementId: string,
     dimensions: string[]
   ) => void;
+  containerHeight: number;
+  setContainerHeight: React.Dispatch<React.SetStateAction<number>>;
 }
 
 type htmlElementFunction = (props: htmlElementConfiguration) => JSX.Element;

@@ -5,18 +5,26 @@ export const styles: { [key: string]: CSSProperties } = {
     backgroundColor: "white",
     width: "100%",
   },
+  tabButtonContainer: {
+    borderBottom: "2px solid #eeeeee",
+  },
   tabContainer: {
     padding: "10px",
   },
   tab: {
+    border: 'none',
+    width: '50%',
     padding: "10px",
     cursor: "pointer",
-    borderBottom: "2px solid transparent",
+    backgroundColor: "white",
+    borderBottom: "3px solid transparent",
   },
   activeTab: {
+    border: 'none',
+    width: '50%',
     padding: "10px",
-    cursor: "pointer",
-    borderBottom: "2px solid #000",
+    backgroundColor: "white",
+    borderBottom: "3px solid #0EA6CE",
   },
   draggableItem: {
     display: "flex",

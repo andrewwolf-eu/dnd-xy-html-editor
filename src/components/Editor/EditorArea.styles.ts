@@ -4,24 +4,15 @@ export const styles: { [key: string]: CSSProperties } = {
   editorContainer: {
     marginBottom: "10px",
     border: "1px solid #ddd",
-    padding: '5px',
-    borderRadius: "4px",
-    backgroundColor: "#f9f9f9",
+    padding: "5px",
+    boxShadow: "0px 0px 15px rgba(0, 0, 0, 0.3)",
     position: "relative",
   },
   editorContainerSelected: {
     border: "2px solid blue",
   },
-  dimensionConfig: {
-    marginBottom: "10px",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
   editorArea: {
-    border: "2px dashed #ccc",
-    padding: "10px 10px 500px 10px",
-    backgroundColor: "gray",
+    backgroundColor: "white",
     position: "relative",
   },
   flexContainer: {
@@ -29,10 +20,10 @@ export const styles: { [key: string]: CSSProperties } = {
     flexWrap: "wrap",
   },
   flexVerticalContainerSelected: {
-    border: "2px solid blue",
+    borderLeft: "4px solid #0ea6ce",
   },
   flexVertical: {
-    border: "1px solid #ddd",
+    // border: "1px solid #ddd",
     backgroundColor: "#fff",
     minHeight: "100px",
     display: "flex",
@@ -48,22 +39,10 @@ export const styles: { [key: string]: CSSProperties } = {
     height: "100%",
     position: "relative",
   },
-  deleteButton: {
-    position: "absolute",
-    top: "-15px",
-    right: "-15px",
+  delete: {
     cursor: "pointer",
-    zIndex: 10,
-  },
-  draggableItem: {
-    padding: "10px",
-    border: "1px solid #ddd",
-    backgroundColor: "#f0f0f0",
-    marginBottom: "10px",
-    cursor: "grab",
-  },
-  sortableItem: {
-    position: "relative",
-    transition: "transform 0.2s ease, opacity 0.2s ease",
+    backgroundColor: "#29ce95",
+    color: "white",
+    borderRadius: "3px",
   },
 };
