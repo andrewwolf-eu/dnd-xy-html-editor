@@ -155,10 +155,10 @@ export const handleSave: (
 export const handleLoad = (
   setVerticalElements: React.Dispatch<React.SetStateAction<VerticalElement[]>>,
   localStorageSave?: boolean,
-  editorState?: string,
+  editorState?: string
 ) => {
   try {
-    let savedVerticalElements = editorState
+    let savedVerticalElements = editorState;
     if (localStorageSave) {
       savedVerticalElements = localStorage.getItem("DndXYHtmlEditor");
     }
@@ -260,17 +260,49 @@ export const handleOutput = (
     }
   });
 
+  // Get the updated HTML content after modifying img tags
+  const updatedHtmlContent = $("body").html();
+
+  const formattedHtmlContent = `
+  <html>
+    <head>
+      <style>
+        body {
+          margin: 0;
+        }
+        .flex-container {
+          display: flex;
+          flex-direction: column;
+        }
+        .flex-row {
+          display: flex;
+          width: 100%;
+        }
+        .flex-column {
+          min-height: 100px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+          flex-grow: 1;
+          flex-shrink: 0;
+        }
+      </style>
+    </head>
+    <body>
+      ${!preview && cidBasedImageEmbedding ? updatedHtmlContent : htmlContent}
+    </body>
+  </html>
+`;
+
   // Optionally open the formatted content in a new window
   if (preview) {
     const newWindow = window.open();
     if (newWindow) {
-      newWindow.document.write(htmlContent);
+      newWindow.document.write(formattedHtmlContent);
       newWindow.document.close();
     }
   }
-
-  // Get the updated HTML content after modifying img tags
-  const updatedHtmlContent = $("body").html();
 
   // If plainText is provided, generate the plain text email content
   let plainTextOutput = "";
@@ -285,14 +317,14 @@ export const handleOutput = (
   // Return the output based on the cidBasedImageEmbedding and plainText
   if (cidBasedImageEmbedding) {
     return {
-      htmlOutput: updatedHtmlContent,
+      htmlOutput: formattedHtmlContent,
       attachments: attachments,
-      plainTextOutput: plainTextOutput, // Include plain text in the return
+      plainTextOutput: plainTextOutput,
     };
   } else {
     return {
-      htmlOutput: htmlContent,
-      plainTextOutput: plainTextOutput, // Include plain text in the return
+      htmlOutput: formattedHtmlContent,
+      plainTextOutput: plainTextOutput,
     };
   }
 };

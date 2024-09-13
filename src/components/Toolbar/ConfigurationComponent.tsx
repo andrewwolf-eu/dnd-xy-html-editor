@@ -232,7 +232,7 @@ export const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ 
         if (key === 'customAction') {
           return configuration[key](updateKeyValue);
         }
-        if (!(key === 'verticalElement' || key === 'selectedHorizontalElement')) {
+        if (!(key === 'verticalElement' || key === 'selectedHorizontalElement' || key === 'elementIdentifier' || key === 'key')) {
           return renderInput(key, value);
         }
         return null;
