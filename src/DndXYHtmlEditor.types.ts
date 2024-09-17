@@ -39,6 +39,10 @@ type htmlElementFunction = (props: htmlElementConfiguration) => JSX.Element;
 export interface htmlElementConfiguration {
   elementIdentifier: string;
   [key: string]: any;
+  keyLabels?: {
+    [key: string]: string;
+  };
+  hideKeysFromConfiguration?: string[];
 }
 
 export interface HtmlElement {

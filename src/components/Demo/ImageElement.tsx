@@ -5,7 +5,11 @@ export const generalImageElementOptions = {
   align: {
     value: 'center',
     type: 'dropdown',
-    options: ['left', 'center', 'right']
+    options: [
+      { label: 'Left', value: 'left' },
+      { label: 'Center', value: 'center' },
+      { label: 'Right', value: 'right' },
+    ]
   },
 }
 

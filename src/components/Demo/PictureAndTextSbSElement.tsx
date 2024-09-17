@@ -6,12 +6,19 @@ export const generalPictureAndTextSbSElementOptions = {
   picturePosition: {
     value: 'left',
     type: 'dropdown',
-    options: ['left', 'right']
+    options: [
+      { label: 'Left', value: 'left' },
+      { label: 'Right', value: 'right' },
+    ]
   },
   pictureAlign: {
     value: 'center',
     type: 'dropdown',
-    options: ['left', 'center', 'right']
+    options: [
+      { label: 'Left', value: 'left' },
+      { label: 'Center', value: 'center' },
+      { label: 'Right', value: 'right' },
+    ]
   },
   ...generalTextElementOptions
 }

@@ -5,27 +5,55 @@ export const generalButtonElementOptions = {
   fontSize: {
     value: '14px',
     type: 'dropdown',
-    options: ['10px', '12px', '14px', '16px', '18px']
+    options: [
+      { label: '10 pixel', value: '10px' },
+      { label: '12 pixel', value: '12px' },
+      { label: '14 pixel', value: '14px' },
+      { label: '16 pixel', value: '16px' },
+      { label: '18 pixel', value: '18px' },
+    ]
   },
   align: {
     value: 'center',
     type: 'dropdown',
-    options: ['left', 'center', 'right']
+    options: [
+      { label: 'Left', value: 'left' },
+      { label: 'Center', value: 'center' },
+      { label: 'Right', value: 'right' },
+    ]
   },
   backgroundColor: {
     value: 'blue',
     type: 'dropdown',
-    options: ['black', 'red', 'green', 'blue', 'purple']
+    options: [
+      { label: 'Black', value: 'black' },
+      { label: 'Red', value: 'red' },
+      { label: 'Green', value: 'green' },
+      { label: 'Blue', value: 'blue' },
+      { label: 'Purple', value: 'purple' },
+    ]
   },
   color: {
     value: 'white',
     type: 'dropdown',
-    options: ['black', 'red', 'green', 'blue', 'purple', 'white']
+    options: [
+      { label: 'Black', value: 'black' },
+      { label: 'Red', value: 'red' },
+      { label: 'Green', value: 'green' },
+      { label: 'Blue', value: 'blue' },
+      { label: 'Purple', value: 'purple' },
+      { label: 'White', value: 'white' },
+    ]
   },
   borderRadius: {
     value: '0px',
     type: 'dropdown',
-    options: ['0px', '15px', '30px', '50px']
+    options: [
+      { label: '0 pixel', value: '0px' },
+      { label: '15 pixel', value: '15px' },
+      { label: '30 pixel', value: '30px' },
+      { label: '50 pixel', value: '50px' },
+    ]
   },
 }
 

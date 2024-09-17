@@ -6,12 +6,19 @@ export const generalPictureAndTextUeOElementOptions = {
   picturePosition: {
     value: 'top',
     type: 'dropdown',
-    options: ['top', 'bottom']
+    options: [
+      { label: 'Top', value: 'top' },
+      { label: 'Bottom', value: 'bottom' },
+    ]
   },
   pictureAlign: {
     value: 'center',
     type: 'dropdown',
-    options: ['left', 'center', 'right']
+    options: [
+      { label: 'Left', value: 'left' },
+      { label: 'Center', value: 'center' },
+      { label: 'Right', value: 'right' },
+    ]
   },
   ...generalTextElementOptions
 }

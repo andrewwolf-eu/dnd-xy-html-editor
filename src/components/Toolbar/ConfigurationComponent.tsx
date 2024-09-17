@@ -10,6 +10,7 @@ import { useEditor } from "../../context/EditorContext";
 import { parseIfJsonObject } from "../../utils/dimensionUtils";
 
 export const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ configuration }) => {
+  let renderedInputCount = 0
   const { setHtmlElements, setVerticalElements } = useEditor();
 
   // Initialize formState with the `value` from each key in configuration
@@ -46,12 +47,23 @@ export const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ 
       name = e.target.name;
       value = e.target.value;
 
-      if (e.target instanceof HTMLInputElement && e.target.type === 'checkbox') {
-        value = e.target.checked;
-      } else {
-        const result = parseIfJsonObject(value);
-        if (result) {
-          value = result;
+      if (e.target instanceof HTMLInputElement) {
+        if (e.target.type === 'checkbox') {
+          value = e.target.checked;
+        }
+        else if (e.target.type === 'number') {
+          const isValidNumber = value !== '' && /^[+-]?\d+(\.\d+)?$/.test(value);
+          if (isValidNumber) {
+            value = parseFloat(value);
+          } else {
+            return;
+          }
+        }
+        else {
+          const result = parseIfJsonObject(value);
+          if (result) {
+            value = result;
+          }
         }
       }
     } else {
@@ -134,85 +146,106 @@ export const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ 
     );
   };
 
-  const renderArrayButtons = (key: string, options: any[]) => {
-    return (
-      <div key={key}>
-        <label>{key}:</label>
-        <div>
-          {options.map((option, index) => (
-            <button
-              type='button'
-              key={index}
-              onClick={() => handleChange({ name: key, value: option })}
-            >
-              {option}
-            </button>
-          ))}
-        </div>
-      </div>
-    );
-  };
+  const getLabel = (key: string) => {
+    const label = configuration && configuration.keyLabels && configuration.keyLabels[key]
+    return label ? label : key
+  }
 
   const renderDropdown = (key: string, options: any[]) => {
     return (
-      <div key={key} style={styles.renderInput}>
-        <label>{key}:</label>
-        <select name={key} value={formState[key]} onChange={handleChange}>
-          {options.sort().map((option, index) => (
-            <option key={index} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
+      <select name={key} value={formState[key]} onChange={handleChange}>
+        {options.sort().map((option, index) => (
+          <option key={index} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    );
+  };
+
+  const renderArrayButtons = (key: string, options: any[]) => {
+    return (
+      <div>
+        {options.sort().map((option, index) => (
+          <button
+            type='button'
+            key={index}
+            onClick={() => handleChange({ name: key, value: option.value })}
+          >
+            {option.label}
+          </button>
+        ))}
       </div>
     );
   };
 
+  const stringInput = (key: string) => {
+    return (
+      <AutoExpandTextarea
+        name={key}
+        value={formState[key]}
+        onChange={handleChange}
+      />
+    );
+  }
+
+  const numberInput = (key: string, value: any) => {
+    return (
+      <input
+        type="number"
+        name={key}
+        step="1"
+        value={formState[key]}
+        onChange={handleChange}
+      />
+    )
+  }
+
+  const booleanInput = (key: string) => {
+    return (
+      <input
+        type="checkbox"
+        name={key}
+        checked={formState[key]}
+        onChange={handleChange}
+      />
+    );
+  }
+
+  const optionsInput = (key: string, value: any) => {
+    return value.type === 'dropdown'
+      ? renderDropdown(key, value.options)
+      : renderArrayButtons(key, value.options);
+  }
+
+  const objectInput = (key: string) => {
+    const stringValue = JSON.stringify(formState[key]);
+    return (
+      <input
+        type="text"
+        name={key}
+        value={stringValue}
+        onChange={handleChange}
+      />
+    );
+  }
+
   const renderInput = (key: string, value: any) => {
-    // Handle rendering of the main input types
-    if (typeof value === 'string' || typeof value === 'number') {
-      return (
-        <div key={key} style={styles.renderInput}>
-          <label>{key}:</label>
-          <AutoExpandTextarea
-            name={key}
-            value={formState[key]}
-            onChange={handleChange}
-          />
-        </div>
-      );
-    } else if (typeof value === 'boolean') {
-      return (
-        <div key={key} style={styles.renderInput}>
-          <label>{key}:</label>
-          <input
-            type="checkbox"
-            name={key}
-            checked={formState[key]}
-            onChange={handleChange}
-          />
-        </div>
-      );
-    } else if (typeof value === 'object' && value.hasOwnProperty('value') && value.hasOwnProperty('options')) {
-      // Conditionally render dropdown or buttons based on the `type`
-      return value.type === 'dropdown'
-        ? renderDropdown(key, value.options)
-        : renderArrayButtons(key, value.options);
-    } else if (typeof value === 'object' && !Array.isArray(value)) {
-      const stringValue = JSON.stringify(formState[key]);
-      return (
-        <div key={key} style={styles.renderInput}>
-          <label>{key}:</label>
-          <input
-            type="text"
-            name={key}
-            value={stringValue}
-            onChange={handleChange}
-          />
-        </div>
-      );
-    } else {
-      return null;
+    switch (typeof value) {
+      case 'string':
+        return stringInput(key)
+      case 'number':
+        return numberInput(key, value)
+      case 'boolean':
+        return booleanInput(key)
+      case 'object':
+        if (value !== null && value.hasOwnProperty('value') && value.hasOwnProperty('options')) {
+          return optionsInput(key, value)
+        } else if (value !== null && !Array.isArray(value)) {
+          objectInput(key)
+        }
+      default:
+        return null
     }
   };
 
@@ -227,15 +260,25 @@ export const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ 
 
   return (
     <div>
-      {/* Render all form elements based on the new configuration structure */}
       {Object.entries(configuration).map(([key, value]) => {
+        if ((key === 'verticalElement' ||
+          key === 'selectedHorizontalElement' ||
+          key === 'elementIdentifier' ||
+          key === 'key' ||
+          key === 'keyLabels' ||
+          key === 'hideKeysFromConfiguration' ||
+          configuration && configuration.hideKeysFromConfiguration && configuration.hideKeysFromConfiguration.includes(key))) {
+          return null
+        }
         if (key === 'customAction') {
-          return configuration[key](updateKeyValue);
+          return <div key={key}>{configuration[key](updateKeyValue)}</div>;
         }
-        if (!(key === 'verticalElement' || key === 'selectedHorizontalElement' || key === 'elementIdentifier' || key === 'key')) {
-          return renderInput(key, value);
-        }
-        return null;
+        renderedInputCount += 1;
+        return <div key={key} style={styles.renderInput}>
+          {renderedInputCount > 1 && <div style={styles.divider} />}
+          <label style={styles.renderInputLabel}>{getLabel(key)}:</label>
+          {renderInput(key, value)}
+        </div>
       })}
     </div>
   );

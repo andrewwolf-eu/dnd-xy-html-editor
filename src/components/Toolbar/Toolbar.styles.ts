@@ -12,16 +12,16 @@ export const styles: { [key: string]: CSSProperties } = {
     padding: "10px",
   },
   tab: {
-    border: 'none',
-    width: '50%',
+    border: "none",
+    width: "50%",
     padding: "10px",
     cursor: "pointer",
     backgroundColor: "white",
     borderBottom: "3px solid transparent",
   },
   activeTab: {
-    border: 'none',
-    width: '50%',
+    border: "none",
+    width: "50%",
     padding: "10px",
     backgroundColor: "white",
     borderBottom: "3px solid #0EA6CE",
@@ -61,5 +61,17 @@ export const styles: { [key: string]: CSSProperties } = {
   renderInput: {
     display: "flex",
     flexDirection: "column",
+  },
+  renderInputLabel: {
+    fontWeight: 600,
+    paddingTop: "10px",
+    paddingBottom: "10px",
+    color: "#12326E",
+  },
+  divider: {
+    marginTop: "20px",
+    height: "1px",
+    width: "100%",
+    backgroundColor: "#EEEEEE",
   },
 };

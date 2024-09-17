@@ -4,30 +4,65 @@ import { htmlElementConfiguration } from "DndXYHtmlEditor.types"
 export const generalHeadlineElementOptions = {
   headingLevel: {
     value: '1',
-    options: ['1', '2', '3', '4']
+    options: [
+      { label: 'H1', value: '1' },
+      { label: 'H2', value: '2' },
+      { label: 'H3', value: '3' },
+      { label: 'H4', value: '4' },
+    ]
   },
   fontFamily: {
     value: 'Times New Roman',
     type: 'dropdown',
-    options: ['Times New Roman', 'Georgia', 'Garamond', 'Palatino', 'Bookman', 'Arial', 'Helvetica', 'Verdana', 'Tahoma', 'Trebuchet MS', 'Gill Sans']
+    options: [
+      { label: 'Times New Roman', value: 'Times New Roman' },
+      { label: 'Georgia', value: 'Georgia' },
+      { label: 'Garamond', value: 'Garamond' },
+      { label: 'Palatino', value: 'Palatino' },
+      { label: 'Bookman', value: 'Bookman' },
+      { label: 'Arial', value: 'Arial' },
+      { label: 'Helvetica', value: 'Helvetica' },
+      { label: 'Verdana', value: 'Verdana' },
+      { label: 'Tahoma', value: 'Tahoma' },
+      { label: 'Trebuchet MS', value: 'Trebuchet MS' },
+      { label: 'Gill Sans', value: 'Gill Sans' },
+    ]
   },
   textAlign: {
     value: 'left',
     type: 'dropdown',
-    options: ['left', 'center', 'right', 'justify']
+    options: [
+      { label: 'Left', value: 'left' },
+      { label: 'Center', value: 'center' },
+      { label: 'Right', value: 'right' },
+      { label: 'Justify', value: 'justify' },
+    ]
   },
   margin: {
     value: '30px',
-    options: ['10px', '20px', '30px']
+    options: [
+      { label: '10 pixel', value: '10px' },
+      { label: '20 pixel', value: '20px' },
+      { label: '30 pixel', value: '30px' },
+    ]
   },
   color: {
     value: 'black',
     type: 'dropdown',
-    options: ['black', 'red', 'green', 'blue', 'purple']
+    options: [
+      { label: 'Black', value: 'black' },
+      { label: 'Red', value: 'red' },
+      { label: 'Green', value: 'green' },
+      { label: 'Blue', value: 'blue' },
+      { label: 'Purple', value: 'purple' },
+    ]
   },
   fontStyle: {
     value: 'normal',
-    options: ['normal', 'italic']
+    options: [
+      { label: 'Normal', value: 'normal' },
+      { label: 'Italic', value: 'italic' },
+    ]
   }
 }
 

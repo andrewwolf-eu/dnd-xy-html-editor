@@ -37,8 +37,6 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({
 
   const removeHorizontalElementFromVerticalElement = (verticalElementId: string, horizontalElement: JSX.Element) => {
     setVerticalElements((prevVerticalElements: VerticalElement[]) => {
-      console.log({ verticalElementId, prevVerticalElements });
-
       return prevVerticalElements.map((verticalElement: VerticalElement) => {
         if (verticalElement.id === verticalElementId) {
           // Filter out the element to be removed
