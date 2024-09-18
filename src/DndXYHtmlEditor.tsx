@@ -85,6 +85,9 @@ const AppContent = forwardRef(({
   useEffect(() => {
     htmlElements.forEach((htmlElement) => {
       registerComponent(htmlElement.configuration.elementIdentifier, htmlElement.element)
+      if (htmlElement.configuration.hasOwnProperty('customAction')) {
+        registerComponent(`${htmlElement.configuration.elementIdentifier}_customAction`, htmlElement.configuration.customAction)
+      }
     })
     setHtmlElements(htmlElements)
 

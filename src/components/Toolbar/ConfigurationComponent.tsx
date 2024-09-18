@@ -267,6 +267,7 @@ export const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ 
           key === 'key' ||
           key === 'keyLabels' ||
           key === 'hideKeysFromConfiguration' ||
+          key === 'children' ||
           configuration && configuration.hideKeysFromConfiguration && configuration.hideKeysFromConfiguration.includes(key))) {
           return null
         }

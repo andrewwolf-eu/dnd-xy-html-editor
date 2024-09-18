@@ -9,9 +9,20 @@ import { EmailAttachment } from "smtp-server/types";
 
 // Utility to serialize elements
 const serializeElement = (horizontalElements: JSX.Element) => {
+  const htmlElementProps = horizontalElements.props.htmlElement
+    ? horizontalElements.props.htmlElement.configuration
+    : horizontalElements.props;
+
+  const serializedProps = {
+    ...htmlElementProps,
+    customAction: htmlElementProps.hasOwnProperty("customAction")
+      ? "customAction"
+      : null,
+  };
+
   return {
     key: horizontalElements.key,
-    props: horizontalElements.props,
+    props: serializedProps,
   };
 };
 
@@ -23,12 +34,21 @@ const deserializeElement = (serializedElement: any) => {
   const htmlElementProps = serializedElement.props.htmlElement
     ? serializedElement.props.htmlElement.configuration
     : serializedElement.props;
+
+  // Rebuild the customAction function based on the identifier
+  let customAction = null;
+  if (htmlElementProps.customAction === "customAction") {
+    customAction = getComponent(`${htmlElementIdentifier}_customAction`);
+  }
+
   const Component = getComponent(htmlElementIdentifier);
+
   return React.createElement(
     Component,
     {
       ...htmlElementProps,
       key: serializedElement.key,
+      customAction,
     },
     serializedElement.props.children
   );
