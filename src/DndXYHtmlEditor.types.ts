@@ -9,7 +9,9 @@ export interface DndXYHtmlEditorProps
 
 export interface EditorAreaProps
   extends VerticalElementConfigurationProps,
-    SelectionProps {}
+    SelectionProps {
+  editorWidthPercent: number;
+}
 
 export interface EditorContextType {
   htmlElements: HtmlElement[];
@@ -32,6 +34,8 @@ export interface EditorContextType {
   ) => void;
   containerHeight: number;
   setContainerHeight: React.Dispatch<React.SetStateAction<number>>;
+  containerScale: number[];
+  setContainerScale: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
 type htmlElementFunction = (props: htmlElementConfiguration) => JSX.Element;

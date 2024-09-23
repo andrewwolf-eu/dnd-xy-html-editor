@@ -21,6 +21,7 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({
   const [selectedVerticalElement, setSelectedVerticalElement] = useState<string | null>(null);
   const [selectedHorizontalElement, setSelectedHorizontalElement] = useState<string | null>(null);
   const [containerHeight, setContainerHeight] = useState<number>(window.innerHeight);
+  const [containerScale, setContainerScale] = useState<number[]>([]);
 
   const addVerticalElement = () => {
     setVerticalElements((prevVerticalElements) => [
@@ -88,7 +89,9 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({
         removeHorizontalElementFromVerticalElement,
         updateVerticalElementDimension,
         containerHeight,
-        setContainerHeight
+        setContainerHeight,
+        containerScale,
+        setContainerScale,
       }}
     >
       {children}

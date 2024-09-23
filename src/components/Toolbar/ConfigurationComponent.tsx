@@ -242,7 +242,7 @@ export const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ 
         if (value !== null && value.hasOwnProperty('value') && value.hasOwnProperty('options')) {
           return optionsInput(key, value)
         } else if (value !== null && !Array.isArray(value)) {
-          objectInput(key)
+          return objectInput(key)
         }
       default:
         return null
@@ -258,20 +258,16 @@ export const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ 
     handleChange({ name: key, value: value })
   };
 
+  const excludedKeys = ['verticalElement', 'selectedHorizontalElement', 'elementIdentifier', 'key', 'keyLabels', 'hideKeysFromConfiguration', 'children']
   return (
     <div>
       {Object.entries(configuration).map(([key, value]) => {
         if ((key === 'verticalElement' ||
-          key === 'selectedHorizontalElement' ||
-          key === 'elementIdentifier' ||
-          key === 'key' ||
-          key === 'keyLabels' ||
-          key === 'hideKeysFromConfiguration' ||
-          key === 'children' ||
+          excludedKeys.includes(key) ||
           configuration && configuration.hideKeysFromConfiguration && configuration.hideKeysFromConfiguration.includes(key))) {
           return null
         }
-        if (key === 'customAction') {
+        if (key === 'customAction' && typeof configuration[key] === 'function') {
           return <div key={key}>{configuration[key](updateKeyValue)}</div>;
         }
         renderedInputCount += 1;

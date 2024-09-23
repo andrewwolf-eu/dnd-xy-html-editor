@@ -61,7 +61,9 @@ const AppContent = forwardRef(({
     setSelectedHorizontalElement,
     addVerticalElement,
     containerHeight,
-    setContainerHeight
+    setContainerHeight,
+    containerScale,
+    setContainerScale
   } = useEditor();
   const loadState = (editorState: string) => {
     handleLoad(setVerticalElements, localStorageSave, editorState)
@@ -109,7 +111,9 @@ const AppContent = forwardRef(({
   const handleMouseMove = (e) => {
     const containerWidth = document.body.clientWidth;
     const newWidth = (e.clientX / containerWidth) * 100;
-    setEditorWidthPercent(newWidth);
+    if (newWidth > 50) {
+      setEditorWidthPercent(newWidth);
+    }
   };
 
   const handleMouseUp = () => {
@@ -129,7 +133,7 @@ const AppContent = forwardRef(({
         handleDragStart(event, setActiveId, setActiveElement)
       }
       onDragEnd={(event) =>
-        handleDragEnd(event, verticalElements, setVerticalElements, setActiveId, setActiveElement)
+        handleDragEnd(event, verticalElements, setVerticalElements, setActiveId, setActiveElement, containerScale, setContainerScale)
       }
     >
       <div style={styles.app}>
@@ -144,6 +148,7 @@ const AppContent = forwardRef(({
                 verticalElement={verticalElement}
                 onVerticalElementClick={onVerticalElementClick}
                 onHorizontalElementClick={onHorizontalElementClick}
+                editorWidthPercent={editorWidthPercent}
               />
             ))}
           </SortableContext>

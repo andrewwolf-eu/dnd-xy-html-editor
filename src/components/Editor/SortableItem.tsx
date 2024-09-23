@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { IconButton } from '@mui/material';
@@ -9,15 +9,19 @@ import { styles } from "./SortableItem.styles";
 
 interface SortableItemProps {
   id: any;
+  itemIndex: number;
   itemWidth: string;
   children: React.ReactNode;
   verticalElement: VerticalElement,
-  element: JSX.Element
+  element: JSX.Element,
+  scale: number
 }
 
-const SortableItem: React.FC<SortableItemProps> = ({ id, itemWidth, children, verticalElement, element }) => {
+const SortableItem: React.FC<SortableItemProps> = ({ id, itemIndex, itemWidth, children, verticalElement, element, scale }) => {
   const {
     removeHorizontalElementFromVerticalElement,
+    containerScale,
+    setContainerScale,
   } = useEditor();
   const {
     attributes,
@@ -33,12 +37,15 @@ const SortableItem: React.FC<SortableItemProps> = ({ id, itemWidth, children, ve
     transition,
     flexBasis: `calc(${itemWidth} - 8px)`,
     opacity: isDragging ? 0.5 : 1,
+    overflow: 'hidden',
     zIndex: isDragging ? 1000 : "auto", // Ensure dragging item is on top
   };
 
   const handleRemoveItem = (element: JSX.Element, event: React.MouseEvent) => {
     event.stopPropagation();
     removeHorizontalElementFromVerticalElement(verticalElement.id, element);
+    const newContainerScale = containerScale.filter((_, index) => index !== itemIndex);
+    setContainerScale(newContainerScale)
   };
 
   return (
@@ -57,21 +64,26 @@ const SortableItem: React.FC<SortableItemProps> = ({ id, itemWidth, children, ve
           }
         });
       }}>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        transform: `scale(${scale})`,
+        transformOrigin: 'top left',
+      }}>
         <div style={{ flexGrow: 1 }}>
           {children}
-        </div>
-        <div style={styles.iconButtonContainer}>
-          <IconButton className="hover-button" {...listeners} style={styles.dragHandle}>
-            <DragIndicator />
-          </IconButton>
-          <IconButton
-            className="hover-button"
-            onMouseDown={(e) => handleRemoveItem(element, e)}
-            style={styles.delete}
-          >
-            <Delete />
-          </IconButton>
+          <div style={styles.iconButtonContainer}>
+            <IconButton className="hover-button" {...listeners} style={styles.dragHandle}>
+              <DragIndicator />
+            </IconButton>
+            <IconButton
+              className="hover-button"
+              onMouseDown={(e) => handleRemoveItem(element, e)}
+              style={styles.delete}
+            >
+              <Delete />
+            </IconButton>
+          </div>
         </div>
       </div>
     </div>

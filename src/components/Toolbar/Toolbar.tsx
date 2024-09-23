@@ -16,7 +16,7 @@ const Toolbar: React.FC<ToolbarConfigurationProps & { translations: Translations
   const toolbarhtmlElements = htmlElements.length > 0 ? htmlElements : demoHtmlElements
   // State to manage active tab and selected element
   const [activeTab, setActiveTab] = useState<string>('elements');
-  const selectedElementInitState = { id: '', HtmlElement: null }
+  const selectedElementInitState: { id: string, HtmlElement: HtmlElement | null } = { id: '', HtmlElement: null };
   const [selectedElement, setSelectedElement] = useState<{ id: string, HtmlElement: HtmlElement }>(selectedElementInitState);
 
   // Function to handle tab switch
@@ -30,12 +30,10 @@ const Toolbar: React.FC<ToolbarConfigurationProps & { translations: Translations
   };
 
   useEffect(() => {
-    if (selectedHorizontalElement) {
+    if (selectedHorizontalElement && selectedElement.id) {
       setSelectedElement(selectedElementInitState);
     }
-  }, [
-    selectedHorizontalElement
-  ])
+  }, [selectedHorizontalElement]);
 
   return (
     <div style={styles.toolbar}>
@@ -53,7 +51,7 @@ const Toolbar: React.FC<ToolbarConfigurationProps & { translations: Translations
       {activeTab === 'elements' && (
         <div style={styles.tabContainer}>
           <div>{translations?.toolbar?.elements?.info ?? 'Add content to the newsletter, or you can use the one in the template. Drag the element to the left, and then you can edit it.'}</div>
-          <div style={{ display: 'grid', gridTemplateColumns: `repeat(${toolbarConfiguration.columnsInElements}, 1fr)` }}>
+          <div style={{ display: 'grid', gridTemplateColumns: `repeat(${toolbarConfiguration.columnsInElements ?? 1}, 1fr)` }}>
             {toolbarhtmlElements.map((item: HtmlElement, index) => {
               const id = `draggable-${index}`;
               return (

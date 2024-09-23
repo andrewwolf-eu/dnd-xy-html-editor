@@ -68,7 +68,9 @@ export const handleDragEnd = (
   verticalElements: VerticalElement[],
   setVerticalElements: React.Dispatch<React.SetStateAction<VerticalElement[]>>,
   setActiveId: React.Dispatch<React.SetStateAction<string | null>>,
-  setActiveElement: React.Dispatch<React.SetStateAction<JSX.Element | null>>
+  setActiveElement: React.Dispatch<React.SetStateAction<JSX.Element | null>>,
+  containerScale: number[],
+  setContainerScale: React.Dispatch<React.SetStateAction<number[]>>
 ) => {
   const { active, over } = event;
   const activeId = active.id as string;
@@ -121,6 +123,13 @@ export const handleDragEnd = (
     }
   } else if (activeId !== overId) {
     // console.log("Case 3: when you move horizontal element iniside the vertical element area");
+    const arrayMove = (array, fromIndex, toIndex) => {
+      const newArray = [...array]; // Create a shallow copy to avoid mutating the original array
+      const [movedItem] = newArray.splice(fromIndex, 1); // Remove the item from the fromIndex
+      newArray.splice(toIndex, 0, movedItem); // Insert the item at the toIndex
+      return newArray;
+    };
+
     setVerticalElements((prevVerticalElements) => {
       return prevVerticalElements.map((verticalElement) => {
         if (
@@ -132,6 +141,12 @@ export const handleDragEnd = (
           const newIndex = verticalElement.horizontalElements.findIndex(
             (element) => element.key === overId
           );
+          const newContainerScale = arrayMove(
+            containerScale,
+            oldIndex,
+            newIndex
+          );
+          setContainerScale(newContainerScale);
           return {
             ...verticalElement,
             horizontalElements: arrayMove(
