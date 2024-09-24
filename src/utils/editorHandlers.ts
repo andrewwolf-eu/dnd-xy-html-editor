@@ -81,20 +81,9 @@ export const handleDragEnd = (
 
   if (!over) return;
 
-  if (activeId.startsWith("editor-") && overId.startsWith("editor-")) {
-    // console.log("Case 1: when you move the vertical element area");
-    setVerticalElements((prevVerticalElements) => {
-      const oldIndex = prevVerticalElements.findIndex(
-        (verticalElement) => `editor-${verticalElement.id}` === activeId
-      );
-      const newIndex = prevVerticalElements.findIndex(
-        (verticalElement) => `editor-${verticalElement.id}` === overId
-      );
-      return arrayMove(prevVerticalElements, oldIndex, newIndex);
-    });
-  } else if (active.data.current && overId.startsWith("editor-area-")) {
-    // console.log("Case 2: when you move horizontal element into the vertical element area");
-    const verticalElementId = parseInt(overId.split("-")[2], 10).toString();
+  const cloneElementAndAddToHorizontalElements = (
+    verticalElementId: string
+  ) => {
     if (active.data.current.element) {
       const newElement = React.cloneElement(active.data.current.element, {
         key: `${verticalElementId}-${
@@ -119,46 +108,67 @@ export const handleDragEnd = (
         );
         return newVerticalElements;
       });
-    } else {
     }
+  };
+
+  if (activeId.startsWith("editor-") && overId.startsWith("editor-")) {
+    // console.log("Case 1: when you move the vertical element area");
+    setVerticalElements((prevVerticalElements) => {
+      const oldIndex = prevVerticalElements.findIndex(
+        (verticalElement) => `editor-${verticalElement.id}` === activeId
+      );
+      const newIndex = prevVerticalElements.findIndex(
+        (verticalElement) => `editor-${verticalElement.id}` === overId
+      );
+      return arrayMove(prevVerticalElements, oldIndex, newIndex);
+    });
+  } else if (active.data.current && overId.startsWith("editor-area-")) {
+    // console.log("Case 2: when you move horizontal element into the vertical element area");
+    const verticalElementId = parseInt(overId.split("-")[2], 10).toString();
+    cloneElementAndAddToHorizontalElements(verticalElementId);
   } else if (activeId !== overId) {
     // console.log("Case 3: when you move horizontal element iniside the vertical element area");
-    const arrayMove = (array, fromIndex, toIndex) => {
-      const newArray = [...array]; // Create a shallow copy to avoid mutating the original array
-      const [movedItem] = newArray.splice(fromIndex, 1); // Remove the item from the fromIndex
-      newArray.splice(toIndex, 0, movedItem); // Insert the item at the toIndex
-      return newArray;
-    };
+    if (activeId.includes("draggable")) {
+      const activeEditorIndex = parseInt(overId.split("-")[0], 10).toString();
+      cloneElementAndAddToHorizontalElements(activeEditorIndex);
+    } else {
+      const arrayMove = (array, fromIndex, toIndex) => {
+        const newArray = [...array]; // Create a shallow copy to avoid mutating the original array
+        const [movedItem] = newArray.splice(fromIndex, 1); // Remove the item from the fromIndex
+        newArray.splice(toIndex, 0, movedItem); // Insert the item at the toIndex
+        return newArray;
+      };
 
-    setVerticalElements((prevVerticalElements) => {
-      return prevVerticalElements.map((verticalElement) => {
-        if (
-          verticalElement.horizontalElements.some((el) => el.key === activeId)
-        ) {
-          const oldIndex = verticalElement.horizontalElements.findIndex(
-            (element) => element.key === activeId
-          );
-          const newIndex = verticalElement.horizontalElements.findIndex(
-            (element) => element.key === overId
-          );
-          const newContainerScale = arrayMove(
-            containerScale,
-            oldIndex,
-            newIndex
-          );
-          setContainerScale(newContainerScale);
-          return {
-            ...verticalElement,
-            horizontalElements: arrayMove(
-              verticalElement.horizontalElements,
+      setVerticalElements((prevVerticalElements) => {
+        return prevVerticalElements.map((verticalElement) => {
+          if (
+            verticalElement.horizontalElements.some((el) => el.key === activeId)
+          ) {
+            const oldIndex = verticalElement.horizontalElements.findIndex(
+              (element) => element.key === activeId
+            );
+            const newIndex = verticalElement.horizontalElements.findIndex(
+              (element) => element.key === overId
+            );
+            const newContainerScale = arrayMove(
+              containerScale,
               oldIndex,
               newIndex
-            ),
-          };
-        }
-        return verticalElement;
+            );
+            setContainerScale(newContainerScale);
+            return {
+              ...verticalElement,
+              horizontalElements: arrayMove(
+                verticalElement.horizontalElements,
+                oldIndex,
+                newIndex
+              ),
+            };
+          }
+          return verticalElement;
+        });
       });
-    });
+    }
   }
 };
 
