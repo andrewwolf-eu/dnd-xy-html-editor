@@ -1,4 +1,5 @@
 import React from "react"
+import { PhotoOutlined } from '@mui/icons-material';
 import { htmlElementConfiguration } from "DndXYHtmlEditor.types"
 import { generalTextElementOptions } from "./TextElement"
 
@@ -34,14 +35,51 @@ export const PictureAndTextUeOElement = (props: htmlElementConfiguration) => {
     margin: props?.textMargin?.value,
   };
 
-  const Image = () => (<tr><td align={props?.pictureAlign?.value} valign="top" width="50%"><img
-    src={props?.src}
-    alt={props?.alt}
-    width={props?.width}
-    height={props?.height}
-  /></td></tr>)
+  const Image = () => (
+    <tr>
+      <td
+        align={props?.pictureAlign?.value}
+        valign="top"
+        width="50%"
+      >
+        {props?.src ? (
+          <img
+            crossOrigin="anonymous"
+            src={props?.src}
+            alt={props?.alt}
+            width={props?.width}
+            height={props?.height}
+          />
+        ) : (
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '212px',
+              height: '212px',
+              backgroundColor: '#EEEEEE',
+              alignContent: 'center',
+            }}
+          >
+            <PhotoOutlined style={{ fontSize:'24px', color: '#777777' }} />
+            <p style={{ fontSize: '16px', color: '#222222' }}></p>
+            {props?.placeholderText}
+          </div>
+        )}
+      </td>
+    </tr>
+  );
 
-  const Text = () => (<tr><td align={paragraphStyle?.textAlign?.value} valign="top" width="50%"><p style={paragraphStyle}>{props.content}</p></td></tr>)
+
+
+
+  const Text = () => (<tr>
+    <td align={paragraphStyle?.textAlign?.value} valign="top" width="50%">
+      <p style={paragraphStyle} dangerouslySetInnerHTML={{ __html: props.content }} />
+    </td>
+  </tr>)
 
   return (
     <table style={{ width: "100%" }} cellPadding={0} cellSpacing={0} border={0}>

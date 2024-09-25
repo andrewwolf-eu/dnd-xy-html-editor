@@ -1,6 +1,7 @@
-import React from "react"
-import { htmlElementConfiguration } from "DndXYHtmlEditor.types"
-import { generalTextElementOptions } from "./TextElement"
+import React from "react";
+import { PhotoOutlined } from '@mui/icons-material';
+import { htmlElementConfiguration } from "DndXYHtmlEditor.types";
+import { generalTextElementOptions } from "./TextElement";
 
 export const generalPictureAndTextSbSElementOptions = {
   picturePosition: {
@@ -34,14 +35,37 @@ export const PictureAndTextSbSElement = (props: htmlElementConfiguration) => {
     margin: props?.textMargin?.value,
   };
 
-  const Image = () => (<td align={props?.pictureAlign?.value} valign="top" width="50%"><img
-    src={props?.src}
-    alt={props?.alt}
-    width={props?.width}
-    height={props?.height}
-  /></td>)
+  const Image = () => (
+    <td align={props?.pictureAlign?.value} valign="top" width="50%">
+      {props?.src ? <img
+        crossOrigin="anonymous"
+        src={props?.src}
+        alt={props?.alt}
+        width={props?.width}
+        height={props?.height}
+      /> : <div style={
+        {
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '212px',
+          height: '212px',
+          backgroundColor: '#EEEEEE',
+          alignContent: 'center'
+        }}>
+        <PhotoOutlined style={{ fontSize: '24px', color: '#777777' }} />
+        <p style={{ fontSize: '16px', color: '#222222' }}></p>{props?.placeholderText}
+      </div>
+      }
+    </td>
+  );
 
-  const Text = () => (<td align={paragraphStyle?.textAlign?.value} valign="top" width="50%"><p style={paragraphStyle}>{props.content}</p></td>)
+  const Text = () => (
+    <td align={paragraphStyle?.textAlign} valign="top" width="50%">
+      <p style={paragraphStyle} dangerouslySetInnerHTML={{ __html: props.content }} />
+    </td>
+  );
 
   return (
     <table style={{ width: "100%" }} cellPadding={0} cellSpacing={0} border={0}>
@@ -60,6 +84,6 @@ export const PictureAndTextSbSElement = (props: htmlElementConfiguration) => {
           )}
         </tr>
       </tbody>
-    </table >
+    </table>
   );
 };

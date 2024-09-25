@@ -98,6 +98,6 @@ export const TextElement = (props: htmlElementConfiguration) => {
   };
 
   return <div style={{ width: '100%' }}>
-    <p style={{ ...paragraphStyle }}>{props.content}</p>
+    <p style={paragraphStyle} dangerouslySetInnerHTML={{ __html: props.content }} />
   </div>
 }

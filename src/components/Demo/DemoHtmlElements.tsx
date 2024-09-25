@@ -34,7 +34,7 @@ const keyLabels = {
   borderRadius: 'Border radius'
 }
 
-const hideKeysFromConfiguration  = ['src']
+const hideKeysFromConfiguration = ['src']
 
 export const demoHtmlElements: HtmlElement[] = [
   {
@@ -48,13 +48,15 @@ export const demoHtmlElements: HtmlElement[] = [
       elementIdentifier: 'PictureAndTextSbSElement',
       key: 'picture-and-text-side-by-side-element',
       keyLabels,
+      // hideKeysFromConfiguration,
       customAction: (updateKeyValue: ({ key, value }: { key: string, value: string }) => void) => {
         return <div style={{ display: 'flex', alignItems: 'center' }} onClick={() => updateKeyValue({ key: 'src', value: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1b/36/37/32/caption.jpg?w=1100&h=1100&s=1' })}>
           <SystemUpdateAlt />
           <span>Update Image with some external image store</span>
         </div>
       },
-      src: 'https://media.gq-magazine.co.uk/photos/5daf29d843196300087c8a24/16:9/w_2560%2Cc_limit/20191022-Budapest-01.jpg',
+      src: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1b/36/37/32/caption.jpg?w=1100&h=1100&s=1',
+      placeholderText: 'Add picture',
       alt: 'Configured Image Element',
       width: 500,
       height: 300,
@@ -73,12 +75,13 @@ export const demoHtmlElements: HtmlElement[] = [
       elementIdentifier: 'PictureAndTextUeOElement',
       key: 'picture-and-text-under-each-other-element',
       keyLabels,
-      hideKeysFromConfiguration,
-      src: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1b/36/37/32/caption.jpg?w=1100&h=1100&s=1',
+      // hideKeysFromConfiguration,
+      // src: 'https://media.gq-magazine.co.uk/photos/5daf29d843196300087c8a24/16:9/w_2560%2Cc_limit/20191022-Budapest-01.jpg',
+      placeholderText: 'Add picture',
       alt: 'Configured Image Element',
       width: 500,
       height: 300,
-      content: `Buda Castle, perched atop a hill in Buda, is one of Hungary’s most iconic historical landmarks. This majestic complex includes palaces, museums, and libraries, offering stunning views of the Danube River and Pest. Inside the castle, you'll find the Hungarian National Gallery and the Budapest History Museum, where you can explore the country's rich cultural and historical heritage`,
+      content: `Buda Castle, perched atop a hill in Buda, is one of Hungary’s most iconic historical landmarks. This majestic complex includes palaces, museums, and libraries, offering stunning views of the Danube River and Pest. Inside the castle, you'll find the Hungarian National Gallery and the <a href="https://budapest.hu/" target="_blank">Budapest</a> History Museum, where you can explore the country's rich cultural and historical heritage`,
       ...generalPictureAndTextUeOElementOptions
     },
   },
@@ -92,7 +95,8 @@ export const demoHtmlElements: HtmlElement[] = [
       elementIdentifier: 'ImageElement',
       key: 'image-element',
       keyLabels,
-      src: 'https://lp-cms-production.imgix.net/2023-03/GettyRF_473481530.jpg',
+      // src: 'https://lp-cms-production.imgix.net/2023-03/GettyRF_473481530.jpg',
+      placeholderText: 'Add picture',
       alt: 'Configured Image Element',
       width: 500,
       height: 300,
