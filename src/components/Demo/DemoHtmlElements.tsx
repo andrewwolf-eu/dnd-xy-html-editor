@@ -1,6 +1,6 @@
 import React from "react"
 import { HtmlElement } from "DndXYHtmlEditor.types"
-import { BusinessCenterOutlined, SystemUpdateAlt } from "@mui/icons-material"
+import { BusinessCenterOutlined, SystemUpdateAlt, ArtTrack, Storage, PhotoOutlined, TextFields, FormatShapes, InsertLink } from "@mui/icons-material"
 import { PictureAndTextSbSElement, generalPictureAndTextSbSElementOptions } from "./PictureAndTextSbSElement";
 import { PictureAndTextUeOElement, generalPictureAndTextUeOElementOptions } from "./PictureAndTextUeOElement";
 import { ImageElement, generalImageElementOptions } from "./ImageElement";
@@ -40,7 +40,7 @@ export const demoHtmlElements: HtmlElement[] = [
   {
     element: PictureAndTextSbSElement,
     toolbarPreview: <div style={styles.toolbarPreviewContainer}>
-      <BusinessCenterOutlined />
+      <ArtTrack style={{ fontSize: '30px', color: '#0EA6CE' }} />
       <p style={styles.paragraph}>{'Picture and text'}</p>
       <p style={styles.paragraph}>{'(side by side)'}</p>
     </div>,
@@ -67,7 +67,7 @@ export const demoHtmlElements: HtmlElement[] = [
   {
     element: PictureAndTextUeOElement,
     toolbarPreview: <div style={styles.toolbarPreviewContainer}>
-      <BusinessCenterOutlined />
+      <Storage style={{ fontSize: '20px', color: '#0EA6CE' }} />
       <p style={styles.paragraph}>{'Picture and text'}</p>
       <p style={styles.paragraph}>{'(under each other)'}</p>
     </div>,
@@ -88,7 +88,7 @@ export const demoHtmlElements: HtmlElement[] = [
   {
     element: ImageElement,
     toolbarPreview: <div style={styles.toolbarPreviewContainer}>
-      <BusinessCenterOutlined />
+      <PhotoOutlined style={{ fontSize: '20px', color: '#0EA6CE' }} />
       <p>{'Picture'}</p>
     </div>,
     configuration: {
@@ -106,7 +106,7 @@ export const demoHtmlElements: HtmlElement[] = [
   {
     element: HeadlineElement,
     toolbarPreview: <div style={styles.toolbarPreviewContainer}>
-      <BusinessCenterOutlined />
+      <TextFields style={{ fontSize: '24px', color: '#0EA6CE' }} />
       <p>{'Headline'}</p>
     </div>,
     configuration: {
@@ -120,7 +120,7 @@ export const demoHtmlElements: HtmlElement[] = [
   {
     element: TextElement,
     toolbarPreview: <div style={styles.toolbarPreviewContainer}>
-      <BusinessCenterOutlined />
+      <FormatShapes style={{ fontSize: '20px', color: '#0EA6CE' }} />
       <p>{'Textbox'}</p>
     </div>,
     configuration: {
@@ -136,7 +136,7 @@ Providing easy access to all of Budapest’s most important tourist spots (St St
   {
     element: ButtonElement,
     toolbarPreview: <div style={styles.toolbarPreviewContainer}>
-      <BusinessCenterOutlined />
+      <InsertLink style={{ fontSize: '24px', color: '#0EA6CE' }} />
       <p>{'Button'}</p>
     </div>,
     configuration: {
