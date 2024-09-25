@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
-import { EditorContextType, HtmlElement, VerticalElement } from "../DndXYHtmlEditor.types";
+import { EditorContextType, HtmlElement, VerticalElement, ToolbarTabConfig } from "../DndXYHtmlEditor.types";
 
 const EditorContext = createContext<EditorContextType | undefined>(undefined);
 
@@ -20,6 +20,7 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({
   ]);
   const [selectedVerticalElement, setSelectedVerticalElement] = useState<string | null>(null);
   const [selectedHorizontalElement, setSelectedHorizontalElement] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<ToolbarTabConfig>(ToolbarTabConfig.Elements);
   const [containerHeight, setContainerHeight] = useState<number>(window.innerHeight);
   const [containerScale, setContainerScale] = useState<number[]>([]);
 
@@ -88,6 +89,8 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({
         removeVerticalElement,
         removeHorizontalElementFromVerticalElement,
         updateVerticalElementDimension,
+        activeTab,
+        setActiveTab,
         containerHeight,
         setContainerHeight,
         containerScale,

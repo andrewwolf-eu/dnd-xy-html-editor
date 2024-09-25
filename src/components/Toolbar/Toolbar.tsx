@@ -5,22 +5,21 @@ import { DraggableItem } from "./DraggableItem";
 import {
   HtmlElement,
   Translations,
-  ToolbarConfigurationProps
-} from "DndXYHtmlEditor.types";
+  ToolbarConfigurationProps,
+  ToolbarTabConfig
+} from "../../DndXYHtmlEditor.types";
 import { styles } from "./Toolbar.styles";
 import { demoHtmlElements } from "../Demo/DemoHtmlElements";
 import { useEditor } from "../../context/EditorContext";
 
 const Toolbar: React.FC<ToolbarConfigurationProps & { translations: Translations }> = ({ toolbarConfiguration, translations }) => {
-  const { selectedHorizontalElement, setSelectedHorizontalElement, verticalElements, htmlElements } = useEditor();
+  const { selectedHorizontalElement, setSelectedHorizontalElement, verticalElements, htmlElements, activeTab, setActiveTab } = useEditor();
   const toolbarhtmlElements = htmlElements.length > 0 ? htmlElements : demoHtmlElements
-  // State to manage active tab and selected element
-  const [activeTab, setActiveTab] = useState<string>('elements');
   const selectedElementInitState: { id: string, HtmlElement: HtmlElement | null } = { id: '', HtmlElement: null };
   const [selectedElement, setSelectedElement] = useState<{ id: string, HtmlElement: HtmlElement }>(selectedElementInitState);
 
   // Function to handle tab switch
-  const handleTabChange = (tab: string) => {
+  const handleTabChange = (tab: ToolbarTabConfig) => {
     setActiveTab(tab);
   };
 
@@ -39,10 +38,10 @@ const Toolbar: React.FC<ToolbarConfigurationProps & { translations: Translations
     <div style={styles.toolbar}>
       {/* Tab Navigation */}
       <div style={styles.tabButtonContainer}>
-        <button type='button' onClick={() => handleTabChange('elements')} style={activeTab === 'elements' ? styles.activeTab : styles.tab}>
+        <button type='button' onClick={() => handleTabChange(ToolbarTabConfig.Elements)} style={activeTab === ToolbarTabConfig.Elements ? styles.activeTab : styles.tab}>
           {translations?.toolbar?.elements.tab ?? 'Elements'}
         </button>
-        <button type='button' onClick={() => handleTabChange('configuration')} style={activeTab === 'configuration' ? styles.activeTab : styles.tab}>
+        <button type='button' onClick={() => handleTabChange(ToolbarTabConfig.Configuration)} style={activeTab === ToolbarTabConfig.Configuration ? styles.activeTab : styles.tab}>
           {translations?.toolbar?.configuration.tab ?? 'Configuration'}
         </button>
       </div>

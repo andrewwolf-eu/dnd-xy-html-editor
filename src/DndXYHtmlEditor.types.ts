@@ -13,6 +13,11 @@ export interface EditorAreaProps
   editorWidthPercent: number;
 }
 
+export enum ToolbarTabConfig {
+  Elements = "elements",
+  Configuration = "configuration",
+}
+
 export interface EditorContextType {
   htmlElements: HtmlElement[];
   setHtmlElements: React.Dispatch<React.SetStateAction<HtmlElement[]>>;
@@ -32,6 +37,10 @@ export interface EditorContextType {
     verticalElementId: string,
     dimensions: string[]
   ) => void;
+  activeTab: ToolbarTabConfig;
+  setActiveTab: React.Dispatch<
+    React.SetStateAction<ToolbarTabConfig>
+  >;
   containerHeight: number;
   setContainerHeight: React.Dispatch<React.SetStateAction<number>>;
   containerScale: number[];

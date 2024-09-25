@@ -36,10 +36,7 @@ const EditorArea = ({
   });
 
   const handleItemMouseDown = (itemId: string, event: React.MouseEvent) => {
-    let isDragging = false;
-
     const handleMouseMove = () => {
-      isDragging = true;
       document.removeEventListener('mousemove', handleMouseMove);
     };
 
