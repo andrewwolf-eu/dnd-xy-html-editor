@@ -21,8 +21,6 @@ const SortableEditorArea = ({ verticalElementConfiguration, editorWidthPercent, 
       <EditorArea
         verticalElementConfiguration={verticalElementConfiguration}
         verticalElement={props.verticalElement}
-        onVerticalElementClick={props.onVerticalElementClick}
-        onHorizontalElementClick={props.onHorizontalElementClick}
         editorWidthPercent={editorWidthPercent}
       />
     </div>

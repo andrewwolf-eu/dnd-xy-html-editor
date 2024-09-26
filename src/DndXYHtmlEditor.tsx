@@ -19,7 +19,7 @@ import {
 } from "./utils/editorHandlers";
 import EmailModal from "./components/Email/EmailModal";
 import { EditorProvider, useEditor } from "./context/EditorContext";
-import { DndXYHtmlEditorProps, ToolbarTabConfig } from "./DndXYHtmlEditor.types";
+import { DndXYHtmlEditorProps } from "./DndXYHtmlEditor.types";
 import { styles } from "./DndXYHtmlEditor.styles";
 import { registerComponent } from "../src/components/componentRegistry";
 
@@ -57,10 +57,7 @@ const AppContent = forwardRef(({
   const {
     setHtmlElements,
     verticalElements, setVerticalElements,
-    setSelectedVerticalElement,
-    setSelectedHorizontalElement,
     addVerticalElement,
-    setActiveTab,
     containerHeight,
     setContainerHeight,
     containerScale,
@@ -98,17 +95,6 @@ const AppContent = forwardRef(({
     window.addEventListener('resize', updateHeight);
     return () => window.removeEventListener('resize', updateHeight);
   }, []);
-
-  const onVerticalElementClick = (verticalElementId: string) => {
-    setSelectedVerticalElement(verticalElementId);
-    setSelectedHorizontalElement(null);
-  };
-
-  const onHorizontalElementClick = (horizontalElementId: string) => {
-    setSelectedHorizontalElement(horizontalElementId);
-    setSelectedVerticalElement(null);
-    setActiveTab(ToolbarTabConfig.Configuration)
-  };
 
   const handleMouseMove = (e) => {
     const containerWidth = document.body.clientWidth;
@@ -148,8 +134,6 @@ const AppContent = forwardRef(({
                 verticalElementConfiguration={{ enableDimensionSelector, enableMultipleContainer }}
                 key={verticalElement.id}
                 verticalElement={verticalElement}
-                onVerticalElementClick={onVerticalElementClick}
-                onHorizontalElementClick={onHorizontalElementClick}
                 editorWidthPercent={editorWidthPercent}
               />
             ))}

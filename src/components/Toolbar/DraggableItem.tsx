@@ -5,7 +5,7 @@ import {
 } from "DndXYHtmlEditor.types";
 import { styles } from "./Toolbar.styles";
 
-export const DraggableItem: React.FC<DraggableItemProps> = ({ id, element, toolbarPreview, onMouseDown, selectedElementId }) => {
+export const DraggableItem: React.FC<DraggableItemProps> = ({ id, element, toolbarPreview, immovableElement, onMouseDown, selectedElementId }) => {
   const { attributes, listeners, setNodeRef } = useDraggable({
     id,
     data: {
@@ -31,6 +31,7 @@ export const DraggableItem: React.FC<DraggableItemProps> = ({ id, element, toolb
       style={{
         ...styles.draggableItemContainer,
         ...(isSelectedItem ? styles.draggableItemContainerSelected : {}),
+        display: immovableElement ? 'none' : 'flex',
       }}
     >
       {toolbarPreview}

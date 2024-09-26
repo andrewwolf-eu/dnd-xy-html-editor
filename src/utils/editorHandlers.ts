@@ -81,30 +81,54 @@ export const handleDragEnd = (
 
   if (!over) return;
 
+  const checkIfLastIsImmovable = (activeEditorIndex: string) => {
+    return verticalElements[activeEditorIndex]?.horizontalElements.length === 0
+      ? false
+      : verticalElements[activeEditorIndex]?.horizontalElements[
+          verticalElements[activeEditorIndex]?.horizontalElements.length - 1
+        ].key.includes("immovable");
+  };
+
   const cloneElementAndAddToHorizontalElements = (
-    verticalElementId: string
+    verticalElementId: string,
+    pushIntoBeforeLast?: boolean
   ) => {
     if (active.data.current.element) {
       const newElement = React.cloneElement(active.data.current.element, {
         key: `${verticalElementId}-${
-          verticalElements.find(
-            (verticalElement) => verticalElement.id === verticalElementId
-          )?.horizontalElements.length
+          verticalElements[verticalElementId]?.horizontalElements.length
+        }${
+          active.data.current.element.props.htmlElement.immovable
+            ? "-immovable"
+            : ""
+        }${
+          active.data.current.element.props.htmlElement.protected
+            ? "-protected"
+            : ""
         }`,
       });
 
       setVerticalElements((prevVerticalElements) => {
         const newVerticalElements = prevVerticalElements.map(
-          (verticalElement) =>
-            verticalElement.id === verticalElementId
+          (verticalElement) => {
+            let newHorizontalElements = [...verticalElement.horizontalElements, newElement] // Add to the end of the array;
+            if (pushIntoBeforeLast) {
+              newHorizontalElements = [
+                ...verticalElement.horizontalElements.slice(0, -1), // All elements except the last one
+                newElement, // Insert the new element before the last one
+                verticalElement.horizontalElements[
+                  verticalElement.horizontalElements.length - 1
+                ], // Append the last element
+              ];
+            }
+
+            return verticalElement.id === verticalElementId
               ? {
                   ...verticalElement,
-                  horizontalElements: [
-                    ...verticalElement.horizontalElements,
-                    newElement,
-                  ],
+                  horizontalElements: newHorizontalElements
                 }
-              : verticalElement
+              : verticalElement;
+          }
         );
         return newVerticalElements;
       });
@@ -125,13 +149,22 @@ export const handleDragEnd = (
   } else if (active.data.current && overId.startsWith("editor-area-")) {
     // console.log("Case 2: when you move horizontal element into the vertical element area");
     const verticalElementId = parseInt(overId.split("-")[2], 10).toString();
-    cloneElementAndAddToHorizontalElements(verticalElementId);
+    cloneElementAndAddToHorizontalElements(
+      verticalElementId,
+      checkIfLastIsImmovable(verticalElementId)
+    );
   } else if (activeId !== overId) {
     // console.log("Case 3: when you move horizontal element iniside the vertical element area");
     if (activeId.includes("draggable")) {
       const activeEditorIndex = parseInt(overId.split("-")[0], 10).toString();
-      cloneElementAndAddToHorizontalElements(activeEditorIndex);
+      cloneElementAndAddToHorizontalElements(
+        activeEditorIndex,
+        checkIfLastIsImmovable(activeEditorIndex)
+      );
     } else {
+      if (overId.includes("immovable")) {
+        return;
+      }
       const arrayMove = (array, fromIndex, toIndex) => {
         const newArray = [...array]; // Create a shallow copy to avoid mutating the original array
         const [movedItem] = newArray.splice(fromIndex, 1); // Remove the item from the fromIndex

@@ -38,9 +38,7 @@ export interface EditorContextType {
     dimensions: string[]
   ) => void;
   activeTab: ToolbarTabConfig;
-  setActiveTab: React.Dispatch<
-    React.SetStateAction<ToolbarTabConfig>
-  >;
+  setActiveTab: React.Dispatch<React.SetStateAction<ToolbarTabConfig>>;
   containerHeight: number;
   setContainerHeight: React.Dispatch<React.SetStateAction<number>>;
   containerScale: number[];
@@ -61,6 +59,8 @@ export interface htmlElementConfiguration {
 export interface HtmlElement {
   element: htmlElementFunction;
   toolbarPreview?: JSX.Element;
+  protected?: boolean;
+  immovable?: boolean;
   configuration: htmlElementConfiguration;
 }
 
@@ -102,6 +102,7 @@ export interface DraggableItemProps {
   id: string;
   element: JSX.Element;
   toolbarPreview?: JSX.Element;
+  immovableElement?: boolean;
   onMouseDown: (e: any) => void;
   selectedElementId: string;
 }
@@ -131,6 +132,4 @@ export interface ToolbarConfigurationProps {
 
 interface SelectionProps {
   verticalElement: VerticalElement;
-  onVerticalElementClick: (verticalElementId: string) => void;
-  onHorizontalElementClick: (horizontalElementId: string) => void;
 }

@@ -48,9 +48,17 @@ export const EditorProvider: React.FC<{ children: ReactNode }> = ({
 
           // Regenerate the keys based on the index in the array
           const rekeyedHorizontalElements = updatedHorizontalElements.map((horizontalEl, index) => {
+            const keyParts = horizontalEl.key.split('-');
+
+            let newKey = `${verticalElementId}-${index}`
+            if (keyParts.length > 2) {
+              const configurationParts = keyParts.slice(2).join('-');
+              newKey = `${verticalElementId}-${index}-${configurationParts}`
+            }
+
             return {
               ...horizontalEl,
-              key: `0-${index}`  // Adjust the key format as needed
+              key: newKey
             };
           });
 

@@ -44,6 +44,8 @@ export const demoHtmlElements: HtmlElement[] = [
       <p style={styles.paragraph}>{'Picture and text'}</p>
       <p style={styles.paragraph}>{'(side by side)'}</p>
     </div>,
+    protected: true,
+    immovable: true,
     configuration: {
       elementIdentifier: 'PictureAndTextSbSElement',
       key: 'picture-and-text-side-by-side-element',

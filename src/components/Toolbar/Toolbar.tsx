@@ -17,6 +17,8 @@ const Toolbar: React.FC<ToolbarConfigurationProps & { translations: Translations
   const toolbarhtmlElements = htmlElements.length > 0 ? htmlElements : demoHtmlElements
   const selectedElementInitState: { id: string, HtmlElement: HtmlElement | null } = { id: '', HtmlElement: null };
   const [selectedElement, setSelectedElement] = useState<{ id: string, HtmlElement: HtmlElement }>(selectedElementInitState);
+  const [isHovered, setIsHovered] = useState(false);
+  const [hideImmovableElement, setHideImmovableElement] = useState(true);
 
   // Function to handle tab switch
   const handleTabChange = (tab: ToolbarTabConfig) => {
@@ -34,6 +36,26 @@ const Toolbar: React.FC<ToolbarConfigurationProps & { translations: Translations
     }
   }, [selectedHorizontalElement]);
 
+  const handleKeyDown = (event) => {
+    if (isHovered && event.ctrlKey && event.shiftKey && event.altKey) {
+      setHideImmovableElement(false);
+    }
+  };
+
+  const handleKeyUp = () => {
+    setHideImmovableElement(true);
+  };
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [isHovered]);
+
   return (
     <div style={styles.toolbar}>
       {/* Tab Navigation */}
@@ -48,7 +70,10 @@ const Toolbar: React.FC<ToolbarConfigurationProps & { translations: Translations
 
       {/* Tab Content */}
       {activeTab === 'elements' && (
-        <div style={styles.tabContainer}>
+        <div style={styles.tabContainer}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
           <div>{translations?.toolbar?.elements?.info ?? 'Add content to the newsletter, or you can use the one in the template. Drag the element to the left, and then you can edit it.'}</div>
           <div style={{ display: 'grid', gridTemplateColumns: `repeat(${toolbarConfiguration.columnsInElements ?? 1}, 1fr)` }}>
             {toolbarhtmlElements.map((item: HtmlElement, index) => {
@@ -59,6 +84,7 @@ const Toolbar: React.FC<ToolbarConfigurationProps & { translations: Translations
                   id={id}
                   element={<DynamicHTMLContent htmlElement={item} />}
                   toolbarPreview={item.toolbarPreview ? item.toolbarPreview : <DynamicHTMLContent htmlElement={item} />}
+                  immovableElement={item.immovable && hideImmovableElement}
                   selectedElementId={selectedElement.id}
                   onMouseDown={(e) => {
                     e.stopPropagation();

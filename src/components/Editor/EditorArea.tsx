@@ -6,14 +6,12 @@ import { Delete } from '@mui/icons-material';
 import { useEditor } from "../../context/EditorContext";
 import SortableItem from "./SortableItem";
 import DimensionSelector from "./DimensionSelector";
-import { EditorAreaProps } from "../../DndXYHtmlEditor.types";
+import { EditorAreaProps, ToolbarTabConfig } from "../../DndXYHtmlEditor.types";
 import { styles } from "./EditorArea.styles";
 
 const EditorArea = ({
   verticalElementConfiguration,
   verticalElement,
-  onVerticalElementClick,
-  onHorizontalElementClick,
   editorWidthPercent,
 }: EditorAreaProps) => {
   const paddingHorizontal = 10
@@ -28,7 +26,10 @@ const EditorArea = ({
     removeVerticalElement,
     containerHeight,
     containerScale,
-    setContainerScale
+    setContainerScale,
+    setSelectedVerticalElement,
+    setSelectedHorizontalElement,
+    setActiveTab,
   } = useEditor();
 
   const { setNodeRef } = useDroppable({
@@ -43,7 +44,9 @@ const EditorArea = ({
     const handleMouseUp = () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
-      onHorizontalElementClick(itemId);
+
+      setSelectedVerticalElement(null);
+      setActiveTab(ToolbarTabConfig.Configuration)
     };
 
     document.addEventListener('mousemove', handleMouseMove);
@@ -98,7 +101,10 @@ const EditorArea = ({
         ...styles.editorContainer,
         ...(isSelectedVerticalElement ? styles.editorContainerSelected : {}),
       }}
-      onMouseDown={() => onVerticalElementClick(verticalElementId)}
+      onMouseDown={() => {
+        setSelectedVerticalElement(verticalElementId);
+        setSelectedHorizontalElement(null);
+      }}
     >
       {verticalElementConfiguration.enableDimensionSelector && (
         <DimensionSelector verticalElementId={verticalElementId} />
@@ -141,6 +147,7 @@ const EditorArea = ({
                     ...(isSelectedItem ? styles.flexVerticalContainerSelected : {}),
                   }}
                   onMouseDown={(e) => handleItemMouseDown(itemId.toString(), e)}
+                  onMouseOver={() => setSelectedHorizontalElement(itemId.toString())}
                 >
                   <div style={styles.editorElement}>
                     {element}
@@ -151,7 +158,7 @@ const EditorArea = ({
           })}
         </SortableContext>
       </div>
-    </div>
+    </div >
   );
 };
 

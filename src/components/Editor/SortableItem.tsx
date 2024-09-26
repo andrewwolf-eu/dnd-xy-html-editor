@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { IconButton } from '@mui/material';
@@ -18,10 +18,13 @@ interface SortableItemProps {
 }
 
 const SortableItem: React.FC<SortableItemProps> = ({ id, itemIndex, itemWidth, children, verticalElement, element, scale }) => {
+  const hoverButtonsRef = useRef<HTMLDivElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
   const {
     removeHorizontalElementFromVerticalElement,
     containerScale,
     setContainerScale,
+    selectedHorizontalElement,
   } = useEditor();
   const {
     attributes,
@@ -48,22 +51,31 @@ const SortableItem: React.FC<SortableItemProps> = ({ id, itemIndex, itemWidth, c
     setContainerScale(newContainerScale)
   };
 
+  useEffect(() => {
+    const hoverButtonMove = hoverButtonsRef.current?.querySelectorAll('.hover-button-move');
+    const hoverButtonDelete = hoverButtonsRef.current?.querySelectorAll('.hover-button-delete');
+
+    if (hoverButtonMove) {
+      hoverButtonMove.forEach((btn) => {
+        if (btn instanceof HTMLElement) {
+          btn.style.opacity = isHovered && selectedHorizontalElement && !selectedHorizontalElement.includes('immovable') ? '1' : '0';
+        }
+      });
+    }
+    if (hoverButtonDelete) {
+      hoverButtonDelete.forEach((btn) => {
+        if (btn instanceof HTMLElement) {
+          btn.style.opacity = isHovered && selectedHorizontalElement && !selectedHorizontalElement.includes('protected') ? '1' : '0';
+        }
+      });
+    }
+  }, [selectedHorizontalElement]);
+
   return (
     <div ref={setNodeRef} style={style} {...attributes}
-      onMouseEnter={(e) => {
-        e.currentTarget.querySelectorAll('.hover-button').forEach((btn) => {
-          if (btn instanceof HTMLElement) {
-            btn.style.opacity = '1';
-          }
-        });
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.querySelectorAll('.hover-button').forEach((btn) => {
-          if (btn instanceof HTMLElement) {
-            btn.style.opacity = '0';
-          }
-        });
-      }}>
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <div style={{
         display: 'flex',
         alignItems: 'center',
@@ -72,17 +84,19 @@ const SortableItem: React.FC<SortableItemProps> = ({ id, itemIndex, itemWidth, c
       }}>
         <div style={{ flexGrow: 1 }}>
           {children}
-          <div style={styles.iconButtonContainer}>
-            <IconButton className="hover-button" {...listeners} style={styles.dragHandle}>
-              <DragIndicator />
-            </IconButton>
-            <IconButton
-              className="hover-button"
-              onMouseDown={(e) => handleRemoveItem(element, e)}
-              style={styles.delete}
-            >
-              <Delete />
-            </IconButton>
+          <div style={styles.iconButtonContainer} ref={hoverButtonsRef}>
+            {selectedHorizontalElement && !selectedHorizontalElement.includes('immovable') &&
+              <IconButton className="hover-button-move" {...listeners} style={styles.dragHandle}>
+                <DragIndicator />
+              </IconButton>}
+            {selectedHorizontalElement && !selectedHorizontalElement.includes('protected') &&
+              <IconButton
+                className="hover-button-delete"
+                onMouseDown={(e) => handleRemoveItem(element, e)}
+                style={styles.delete}
+              >
+                <Delete />
+              </IconButton>}
           </div>
         </div>
       </div>
