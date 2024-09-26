@@ -36,7 +36,7 @@ export const PictureAndTextSbSElement = (props: htmlElementConfiguration) => {
   };
 
   const Image = () => (
-    <td align={props?.pictureAlign?.value} valign="top" width="50%">
+    <td align={props?.pictureAlign?.value} valign="middle" width="40%">
       {props?.src ? <img
         crossOrigin="anonymous"
         src={props?.src}
@@ -62,13 +62,13 @@ export const PictureAndTextSbSElement = (props: htmlElementConfiguration) => {
   );
 
   const Text = () => (
-    <td align={paragraphStyle?.textAlign} valign="top" width="50%">
+    <td align={paragraphStyle?.textAlign} valign="middle" width="60%">
       <p style={paragraphStyle} dangerouslySetInnerHTML={{ __html: props.content }} />
     </td>
   );
 
   return (
-    <table style={{ width: "100%" }} cellPadding={0} cellSpacing={0} border={0}>
+    <table style={{ width: '660px', margin: '10px auto 10px auto' }} cellPadding={0} cellSpacing={0} border={0}>
       <tbody>
         <tr>
           {props?.picturePosition?.value === "left" ? (

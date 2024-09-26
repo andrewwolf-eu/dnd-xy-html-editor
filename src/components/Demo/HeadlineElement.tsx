@@ -76,7 +76,7 @@ export const HeadlineElement = (props: htmlElementConfiguration) => {
   };
 
   const HeadingTag = `h${props?.headingLevel?.value}` as keyof JSX.IntrinsicElements;
-  return <div style={{ width: '100%' }}>
+  return <div style={{ width: '660px', margin: '10px auto 10px auto', }}>
     <HeadingTag style={{ ...headlineStyle }}>{props.title}</HeadingTag>
   </div>;
 }

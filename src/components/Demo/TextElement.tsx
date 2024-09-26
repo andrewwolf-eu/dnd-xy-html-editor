@@ -97,7 +97,7 @@ export const TextElement = (props: htmlElementConfiguration) => {
     margin: props?.textMargin?.value,
   };
 
-  return <div style={{ width: '100%' }}>
+  return <div style={{ width: '660px', margin: '10px auto 10px auto' }}>
     <p style={paragraphStyle} dangerouslySetInnerHTML={{ __html: props.content }} />
   </div>
 }

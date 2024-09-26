@@ -40,7 +40,7 @@ export const PictureAndTextUeOElement = (props: htmlElementConfiguration) => {
       <td
         align={props?.pictureAlign?.value}
         valign="top"
-        width="50%"
+        width="100%"
       >
         {props?.src ? (
           <img
@@ -63,7 +63,7 @@ export const PictureAndTextUeOElement = (props: htmlElementConfiguration) => {
               alignContent: 'center',
             }}
           >
-            <PhotoOutlined style={{ fontSize:'24px', color: '#777777' }} />
+            <PhotoOutlined style={{ fontSize: '24px', color: '#777777' }} />
             <p style={{ fontSize: '16px', color: '#222222' }}></p>
             {props?.placeholderText}
           </div>
@@ -76,13 +76,13 @@ export const PictureAndTextUeOElement = (props: htmlElementConfiguration) => {
 
 
   const Text = () => (<tr>
-    <td align={paragraphStyle?.textAlign?.value} valign="top" width="50%">
+    <td align={paragraphStyle?.textAlign?.value} valign="top" width="100%">
       <p style={paragraphStyle} dangerouslySetInnerHTML={{ __html: props.content }} />
     </td>
   </tr>)
 
   return (
-    <table style={{ width: "100%" }} cellPadding={0} cellSpacing={0} border={0}>
+    <table style={{ width: '660px', margin: '10px auto 10px auto' }} cellPadding={0} cellSpacing={0} border={0}>
       <tbody>
         {props?.picturePosition?.value === "top" ? (
           <>

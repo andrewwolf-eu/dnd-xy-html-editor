@@ -68,7 +68,7 @@ export const ButtonElement = (props: htmlElementConfiguration) => {
     textDecoration: 'none',
   };
 
-  return <div style={{ width: '100%', textAlign: props?.align?.value }}>
+  return <div style={{ width: '660px', margin: '10px auto 10px auto', textAlign: props?.align?.value }}>
     <a href={props?.urlToOpen} style={{ ...buttonStyle }}>
       {props.label}
     </a>

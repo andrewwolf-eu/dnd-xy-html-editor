@@ -1,6 +1,6 @@
 import React from "react"
 import { HtmlElement } from "DndXYHtmlEditor.types"
-import { BusinessCenterOutlined, SystemUpdateAlt, ArtTrack, Storage, PhotoOutlined, TextFields, FormatShapes, InsertLink } from "@mui/icons-material"
+import { SystemUpdateAlt, ArtTrack, Storage, PhotoOutlined, TextFields, FormatShapes, InsertLink } from "@mui/icons-material"
 import { PictureAndTextSbSElement, generalPictureAndTextSbSElementOptions } from "./PictureAndTextSbSElement";
 import { PictureAndTextUeOElement, generalPictureAndTextUeOElementOptions } from "./PictureAndTextUeOElement";
 import { ImageElement, generalImageElementOptions } from "./ImageElement";
@@ -55,7 +55,7 @@ export const demoHtmlElements: HtmlElement[] = [
           <span>Update Image with some external image store</span>
         </div>
       },
-      src: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1b/36/37/32/caption.jpg?w=1100&h=1100&s=1',
+      // src: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1b/36/37/32/caption.jpg?w=1100&h=1100&s=1',
       placeholderText: 'Add picture',
       alt: 'Configured Image Element',
       width: 500,
@@ -98,8 +98,6 @@ export const demoHtmlElements: HtmlElement[] = [
       // src: 'https://lp-cms-production.imgix.net/2023-03/GettyRF_473481530.jpg',
       placeholderText: 'Add picture',
       alt: 'Configured Image Element',
-      width: 500,
-      height: 300,
       ...generalImageElementOptions
     },
   },

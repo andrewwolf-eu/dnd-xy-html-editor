@@ -15,13 +15,13 @@ export const generalImageElementOptions = {
 }
 
 export const ImageElement = (props: htmlElementConfiguration) => {
-  return <div style={{ width: '100%', textAlign: props?.align?.value }}>
+  return <div style={{ width: '660px', margin: '10px auto 10px auto', textAlign: props?.align?.value }}>
     {props?.src ? <img
       crossOrigin="anonymous"
       src={props?.src}
       alt={props?.alt}
-      width={props?.width}
-      height={props?.height}
+      width={props?.width ? props?.width : '100%'}
+      height={props?.height ? props?.height : '100%'}
     /> : <div style={
       {
         display: 'flex',
