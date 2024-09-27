@@ -21,6 +21,7 @@ const EditorArea = ({
 
   const { id: verticalElementId, dimensions } = verticalElement;
   const {
+    verticalElements,
     selectedVerticalElement,
     selectedHorizontalElement,
     removeVerticalElement,
@@ -118,7 +119,7 @@ const EditorArea = ({
           <Delete />
         </IconButton>
       )}
-      <div ref={setNodeRef} style={{ ...styles.editorArea, ...styles.flexContainer, padding: `${paddingHorizontal}px ${paddingHorizontal}px ${containerHeight - 60}px 10px` }}>
+      <div ref={setNodeRef} style={{ ...styles.editorArea, ...styles.flexContainer, padding: `${paddingHorizontal}px ${paddingHorizontal}px ${verticalElements[verticalElementId].horizontalElements.length > 0 ? 0 : containerHeight - 150}px 10px` }}>
         <SortableContext
           items={verticalElement.horizontalElements.map(
             (element, index) =>
