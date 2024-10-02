@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { IconButton } from '@mui/material';
@@ -18,8 +18,7 @@ interface SortableItemProps {
 }
 
 const SortableItem: React.FC<SortableItemProps> = ({ id, itemIndex, itemWidth, children, verticalElement, element, scale }) => {
-  const hoverButtonsRef = useRef<HTMLDivElement>(null);
-  const [isHovered, setIsHovered] = useState(false);
+  const [hovered, setHovered] = useState(false);
   const {
     removeHorizontalElementFromVerticalElement,
     containerScale,
@@ -51,30 +50,8 @@ const SortableItem: React.FC<SortableItemProps> = ({ id, itemIndex, itemWidth, c
     setContainerScale(newContainerScale)
   };
 
-  useEffect(() => {
-    const hoverButtonMove = hoverButtonsRef.current?.querySelectorAll('.hover-button-move');
-    const hoverButtonDelete = hoverButtonsRef.current?.querySelectorAll('.hover-button-delete');
-
-    if (hoverButtonMove) {
-      hoverButtonMove.forEach((btn) => {
-        if (btn instanceof HTMLElement) {
-          btn.style.opacity = isHovered && selectedHorizontalElement && !selectedHorizontalElement.includes('immovable') ? '1' : '0';
-        }
-      });
-    }
-    if (hoverButtonDelete) {
-      hoverButtonDelete.forEach((btn) => {
-        if (btn instanceof HTMLElement) {
-          btn.style.opacity = isHovered && selectedHorizontalElement && !selectedHorizontalElement.includes('protected') ? '1' : '0';
-        }
-      });
-    }
-  }, [selectedHorizontalElement]);
-
   return (
     <div ref={setNodeRef} style={style} {...attributes}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
       <div style={{
         display: 'flex',
@@ -82,14 +59,17 @@ const SortableItem: React.FC<SortableItemProps> = ({ id, itemIndex, itemWidth, c
         transform: `scale(${scale})`,
         transformOrigin: 'top left',
       }}>
-        <div style={{ flexGrow: 1 }}>
+        <div style={{ flexGrow: 1, borderLeft: `4px solid ${hovered ?  "#0ea6ce": 'transparent'}` }}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+        >
           {children}
-          <div style={styles.iconButtonContainer} ref={hoverButtonsRef}>
-            {selectedHorizontalElement && !selectedHorizontalElement.includes('immovable') &&
+          <div style={styles.iconButtonContainer}>
+            {selectedHorizontalElement === element.key && !selectedHorizontalElement.includes('immovable') &&
               <IconButton className="hover-button-move" {...listeners} style={styles.dragHandle}>
                 <DragIndicator />
               </IconButton>}
-            {selectedHorizontalElement && !selectedHorizontalElement.includes('protected') &&
+            {selectedHorizontalElement === element.key && !selectedHorizontalElement.includes('protected') &&
               <IconButton
                 className="hover-button-delete"
                 onMouseDown={(e) => handleRemoveItem(element, e)}

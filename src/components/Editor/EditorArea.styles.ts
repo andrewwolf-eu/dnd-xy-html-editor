@@ -19,9 +19,6 @@ export const styles: { [key: string]: CSSProperties } = {
     display: "flex",
     flexWrap: "wrap",
   },
-  flexVerticalContainerSelected: {
-    borderLeft: "4px solid #0ea6ce",
-  },
   flexVertical: {
     // border: "1px solid #ddd",
     backgroundColor: "#fff",

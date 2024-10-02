@@ -14,8 +14,6 @@ export const styles: { [key: string]: CSSProperties } = {
     backgroundColor: "#29ce95",
     color: "white",
     borderRadius: "3px",
-    opacity: 0,
-    transition: "opacity 0.3s ease",
     marginRight: "2px",
   },
   delete: {
@@ -23,7 +21,5 @@ export const styles: { [key: string]: CSSProperties } = {
     backgroundColor: "#29ce95",
     color: "white",
     borderRadius: "3px",
-    opacity: 0,
-    transition: "opacity 0.3s ease",
   },
 };

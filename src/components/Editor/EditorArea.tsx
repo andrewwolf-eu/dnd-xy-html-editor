@@ -47,6 +47,7 @@ const EditorArea = ({
       document.removeEventListener('mouseup', handleMouseUp);
 
       setSelectedVerticalElement(null);
+      setSelectedHorizontalElement(itemId.toString())
       setActiveTab(ToolbarTabConfig.Configuration)
     };
 
@@ -143,12 +144,8 @@ const EditorArea = ({
                 <div
                   ref={el => (elementRefs.current[index] = el)}
                   key={itemId}
-                  style={{
-                    ...styles.flexVertical,
-                    ...(isSelectedItem ? styles.flexVerticalContainerSelected : {}),
-                  }}
+                  style={styles.flexVertical}
                   onMouseDown={(e) => handleItemMouseDown(itemId.toString(), e)}
-                  onMouseOver={() => setSelectedHorizontalElement(itemId.toString())}
                 >
                   <div style={styles.editorElement}>
                     {element}
