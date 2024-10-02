@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { IconButton } from '@mui/material';
@@ -18,12 +18,12 @@ interface SortableItemProps {
 }
 
 const SortableItem: React.FC<SortableItemProps> = ({ id, itemIndex, itemWidth, children, verticalElement, element, scale }) => {
-  const [hovered, setHovered] = useState(false);
   const {
     removeHorizontalElementFromVerticalElement,
     containerScale,
     setContainerScale,
     selectedHorizontalElement,
+    setSelectedHorizontalElement,
   } = useEditor();
   const {
     attributes,
@@ -47,7 +47,8 @@ const SortableItem: React.FC<SortableItemProps> = ({ id, itemIndex, itemWidth, c
     event.stopPropagation();
     removeHorizontalElementFromVerticalElement(verticalElement.id, element);
     const newContainerScale = containerScale.filter((_, index) => index !== itemIndex);
-    setContainerScale(newContainerScale)
+    setSelectedHorizontalElement(null);
+    setContainerScale(newContainerScale);
   };
 
   return (
@@ -59,10 +60,7 @@ const SortableItem: React.FC<SortableItemProps> = ({ id, itemIndex, itemWidth, c
         transform: `scale(${scale})`,
         transformOrigin: 'top left',
       }}>
-        <div style={{ flexGrow: 1, borderLeft: `4px solid ${hovered ?  "#0ea6ce": 'transparent'}` }}
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
-        >
+        <div style={{ flexGrow: 1, borderLeft: `4px solid ${selectedHorizontalElement === element.key ? "#0ea6ce" : 'transparent'}` }}>
           {children}
           <div style={styles.iconButtonContainer}>
             {selectedHorizontalElement === element.key && !selectedHorizontalElement.includes('immovable') &&

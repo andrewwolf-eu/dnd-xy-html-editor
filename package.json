@@ -1,6 +1,6 @@
 {
   "name": "@andrew-wolf/dnd-xy-html-editor",
-  "version": "0.0.33",
+  "version": "0.0.34",
   "main": "./build/index.js",
   "module": "./build/index.es.js",
   "types": "./build/index.d.ts",
