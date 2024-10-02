@@ -84,11 +84,24 @@ const AppContent = forwardRef(({
 
   useEffect(() => {
     htmlElements.forEach((htmlElement) => {
-      registerComponent(htmlElement.configuration.elementIdentifier, htmlElement.element)
-      if (htmlElement.configuration.hasOwnProperty('customAction')) {
-        registerComponent(`${htmlElement.configuration.elementIdentifier}_customAction`, htmlElement.configuration.customAction)
+      // Register the component with elementIdentifier
+      registerComponent(htmlElement.configuration.elementIdentifier, htmlElement.element);
+
+      // Find all keys that start with 'customAction'
+      const customActionKeys = Object.keys(htmlElement.configuration).filter(key => key.startsWith('customAction'));
+
+      // If customActionKeys are found, register components for each
+      if (customActionKeys.length > 0) {
+        customActionKeys.forEach(customActionKey => {
+          // Register each component with the customActionKey
+          registerComponent(
+            `${htmlElement.configuration.elementIdentifier}_${customActionKey}`,
+            htmlElement.configuration[customActionKey]
+          );
+        });
       }
-    })
+    });
+
     setHtmlElements(htmlElements)
 
     const updateHeight = () => setContainerHeight(window.innerHeight);

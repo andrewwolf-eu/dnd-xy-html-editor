@@ -18,7 +18,7 @@ export const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ 
     const initialState: { [key: string]: any } = {};
 
     for (const key in configuration) {
-      if (configuration.hasOwnProperty(key) && key !== 'customAction') {
+      if (configuration.hasOwnProperty(key) && !key.startsWith('customAction')) {
         const value = configuration[key];
         if (typeof value === 'object' && value.hasOwnProperty('value') && value.hasOwnProperty('options')) {
           initialState[key] = value.value; // Use the `value` property for formState
@@ -267,7 +267,7 @@ export const ConfigurationComponent: React.FC<ConfigurationComponentProps> = ({ 
           configuration && configuration.hideKeysFromConfiguration && configuration.hideKeysFromConfiguration.includes(key))) {
           return null
         }
-        if (key === 'customAction' && typeof configuration[key] === 'function') {
+        if (key.startsWith('customAction') && typeof configuration[key] === 'function') {
           return <div key={key}>{configuration[key](updateKeyValue)}</div>;
         }
         renderedInputCount += 1;

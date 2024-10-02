@@ -13,11 +13,16 @@ const serializeElement = (horizontalElements: JSX.Element) => {
     ? horizontalElements.props.htmlElement.configuration
     : horizontalElements.props;
 
+  const customActions = Object.keys(htmlElementProps)
+    .filter((key) => key.startsWith("customAction"))
+    .reduce((acc, key) => {
+      acc[key] = key;
+      return acc;
+    }, {});
+
   const serializedProps = {
     ...htmlElementProps,
-    customAction: htmlElementProps.hasOwnProperty("customAction")
-      ? "customAction"
-      : null,
+    ...customActions,
   };
 
   return {
@@ -36,9 +41,19 @@ const deserializeElement = (serializedElement: any) => {
     : serializedElement.props;
 
   // Rebuild the customAction function based on the identifier
-  let customAction = null;
-  if (htmlElementProps.customAction === "customAction") {
-    customAction = getComponent(`${htmlElementIdentifier}_customAction`);
+  let customActions = {};
+
+  // Find all keys that start with 'customAction'
+  const customActionKeys = Object.keys(htmlElementProps).filter((key) =>
+    key.startsWith("customAction")
+  );
+
+  // If customActionKeys are found, get the corresponding components
+  if (customActionKeys.length > 0) {
+    customActions = customActionKeys.reduce((acc, key) => {
+      acc[key] = getComponent(`${htmlElementIdentifier}_${key}`);
+      return acc;
+    }, {});
   }
 
   const Component = getComponent(htmlElementIdentifier);
@@ -48,7 +63,7 @@ const deserializeElement = (serializedElement: any) => {
     {
       ...htmlElementProps,
       key: serializedElement.key,
-      customAction,
+      ...customActions, // Include all dynamic customActions
     },
     serializedElement.props.children
   );
@@ -111,7 +126,10 @@ export const handleDragEnd = (
       setVerticalElements((prevVerticalElements) => {
         const newVerticalElements = prevVerticalElements.map(
           (verticalElement) => {
-            let newHorizontalElements = [...verticalElement.horizontalElements, newElement] // Add to the end of the array;
+            let newHorizontalElements = [
+              ...verticalElement.horizontalElements,
+              newElement,
+            ]; // Add to the end of the array;
             if (pushIntoBeforeLast) {
               newHorizontalElements = [
                 ...verticalElement.horizontalElements.slice(0, -1), // All elements except the last one
@@ -125,7 +143,7 @@ export const handleDragEnd = (
             return verticalElement.id === verticalElementId
               ? {
                   ...verticalElement,
-                  horizontalElements: newHorizontalElements
+                  horizontalElements: newHorizontalElements,
                 }
               : verticalElement;
           }
@@ -266,6 +284,7 @@ export const handleOutput = (
   cidBasedImageEmbedding: boolean = true,
   plainText: string = ""
 ) => {
+  let notAllVerticalElementelementDimensionIsFullWidth = false;
   const htmlContent = verticalElements
     .map((verticalElement) => {
       // Check if dimension is 100%
@@ -277,6 +296,8 @@ export const handleOutput = (
           .map((element) => convertElementToHTML(element))
           .join("");
       }
+
+      notAllVerticalElementelementDimensionIsFullWidth = true;
 
       const rows: JSX.Element[][] = [];
       for (
@@ -341,32 +362,36 @@ export const handleOutput = (
   // Get the updated HTML content after modifying img tags
   const updatedHtmlContent = $("body").html();
 
+  const extraStyleSheet = notAllVerticalElementelementDimensionIsFullWidth
+    ? `<head>
+          <style>
+            body {
+              margin: 0;
+            }
+            .flex-container {
+              display: flex;
+              flex-direction: column;
+            }
+            .flex-row {
+              display: flex;
+              width: 100%;
+            }
+            .flex-column {
+              min-height: 100px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              position: relative;
+              flex-grow: 1;
+              flex-shrink: 0;
+            }
+          </style>
+        </head>`
+    : "";
+
   const formattedHtmlContent = `
   <html>
-    <head>
-      <style>
-        body {
-          margin: 0;
-        }
-        .flex-container {
-          display: flex;
-          flex-direction: column;
-        }
-        .flex-row {
-          display: flex;
-          width: 100%;
-        }
-        .flex-column {
-          min-height: 100px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          position: relative;
-          flex-grow: 1;
-          flex-shrink: 0;
-        }
-      </style>
-    </head>
+      ${extraStyleSheet}
     <body>
       ${!preview && cidBasedImageEmbedding ? updatedHtmlContent : htmlContent}
     </body>

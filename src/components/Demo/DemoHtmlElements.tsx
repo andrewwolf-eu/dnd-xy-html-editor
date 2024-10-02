@@ -51,10 +51,16 @@ export const demoHtmlElements: HtmlElement[] = [
       key: 'picture-and-text-side-by-side-element',
       keyLabels,
       // hideKeysFromConfiguration,
-      customAction: (updateKeyValue: ({ key, value }: { key: string, value: string }) => void) => {
+      customAction_setImage: (updateKeyValue: ({ key, value }: { key: string, value: string }) => void) => {
         return <div style={{ display: 'flex', alignItems: 'center' }} onClick={() => updateKeyValue({ key: 'src', value: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1b/36/37/32/caption.jpg?w=1100&h=1100&s=1' })}>
           <SystemUpdateAlt />
           <span>Update Image with some external image store</span>
+        </div>
+      },
+      customAction_removeImage: (updateKeyValue: ({ key, value }: { key: string, value: string }) => void) => {
+        return <div style={{ display: 'flex', alignItems: 'center' }} onClick={() => updateKeyValue({ key: 'src', value: undefined })}>
+          <SystemUpdateAlt />
+          <span>Remove Image</span>
         </div>
       },
       // src: 'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1b/36/37/32/caption.jpg?w=1100&h=1100&s=1',
